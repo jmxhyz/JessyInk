@@ -9,35 +9,35 @@
 
 <!--以下 HTML -->
 <div id="cc" style="position:absolute;background:#FF99FF; left:20px; top:30px; width: 80px; z-index:2;">
-    <button onclick="opener.changobject(1,'1',this)" style="cursor:pointer;position:absolute;width:23px;height:25px;left:0px;top:0px;background-color:#CCFFFF;">H</button>
-    <button onclick="opener.changobject(1,'2',this)" style="cursor:pointer;position:absolute;width:23px;height:25px;left:23px;top:0px;background-color:#CCFFFF;">T</button> 
-    <button onclick="opener.changobject(1,'3',this)" style="cursor:pointer;position:absolute;width:23px;height:25px;left:46px;top:0px;background-color:#CCFFFF;">M</button>
+    <button onclick="changobject(1,'1')" style="cursor:pointer;position:absolute;width:23px;height:25px;left:0px;top:0px;background-color:#CCFFFF;">H</button>
+    <button onclick="changobject(1,'2')" style="cursor:pointer;position:absolute;width:23px;height:25px;left:23px;top:0px;background-color:#CCFFFF;">T</button> 
+    <button onclick="changobject(1,'3')" style="cursor:pointer;position:absolute;width:23px;height:25px;left:46px;top:0px;background-color:#CCFFFF;">M</button>
      
    <div style="position:absolute;background:#FF99FF;left:0px;top:26px;"> 
-    <button onclick="opener.nodepptslide(this,-1,0)" style="left:0px;width:65px;height:25px;">&lt;&lt;H&lt;&lt;</button> 
-    <button onclick="opener.nodepptslide(this,0,0)" style="left:0px;width:65px;height:25px;">0 T 0</button>
-    <button onclick="opener.nodepptslide(this,1,0)" style="left:0px;width:65px;height:25px;">&gt;&gt;M&gt;&gt;</button>
+    <button onclick="nodepptslide(-1,0)" style="left:0px;width:65px;height:25px;">&lt;&lt;H&lt;&lt;</button> 
+    <button onclick="nodepptslide(0,0)" style="left:0px;width:65px;height:25px;">0 T 0</button>
+    <button onclick="nodepptslide(1,0)" style="left:0px;width:65px;height:25px;">&gt;&gt;M&gt;&gt;</button>
     
-    <input id="curstephtm" onkeyup="opener.nodepptslide(this,0,1)" style="left:0px;width:60px;height:20px;text-align:center;" value="0" maxlength="2"></input>
+    <input id="curstephtm" onkeyup="nodepptslide(0,this.value)" style="left:0px;width:60px;height:20px;text-align:center;" value="0" maxlength="2"></input>
        
-    <button id="showhide" onclick="opener.showhidebi(this,1)" style="width:65px;height:25px;">用画笔</button><br>
-    <button id="showhideq" onclick="opener.clearCanvas(1)" style="width:65px;height:25px;">清笔迹</button><br>
+    <button id="showhide1" onclick="showhidebi(1)" style="width:65px;height:25px;">用画笔</button><br>
+    <button id="showhideq" onclick="clearCanvas(1)" style="width:65px;height:25px;">清笔迹</button><br>
     <!-- button id="showcover" onclick="autocap(this)" style="width:55px;height:25px;">截图 1</button><br -->
-    <button id="showhidej" onclick="opener.capcanve('1')" style="width:65px;height:25px;">截笔图</button>
-    <button onclick="opener.pencolor(1)" style="width:25px;height:25px;background-color:red;">红</button>&nbsp;
-    <button onclick="opener.pencolor(2)" style="width:25px;height:25px;background-color:blue;color:white;" >蓝</button><br>
-    <button onclick="opener.pencolor(3)" style="width:25px;height:25px;background-color:magenta;">品</button>&nbsp;
-    <button onclick="opener.pencolor(4)" style="width:25px;height:25px;background-color:#FFFF33;">黄</button><br>
-    <button onclick="opener.pencolor(6)" style="width:25px;height:25px;background-color:green;color:white;">绿</button>&nbsp;
-    <button onclick="opener.pencolor(5)" style="width:25px;height:25px;background-color:black;color:white;">黑</button><br>
-    <button onclick="opener.linewid(2)" style="width:25px;height:25px;">２</button>&nbsp;
-    <button onclick="opener.linewid(5)" style="width:25px;height:25px;">５</button><br>
-    <button onclick="opener.linewid(10)" style="width:25px;height:25px;">10</button>&nbsp;
-    <button onclick="opener.linewid(20)" style="width:25px;height:25px;">20</button>
-    <button id="showcover" onclick="opener.showhidebi(this,2)" style="width:65px;height:25px;">用白屏</button><br>
-    <button id="showcoverq" onclick="opener.clearCanvas(2)" style="width:65px;height:25px;">清屏迹</button><br>
-    <button id="showcoverup" onclick="opener.covermove(this)" style="width:65px;height:25px;">移动屏</button><br>
-    <button id="showcoverj" onclick="opener.capcanve('2')" style="width:65px;height:25px;">截屏图</button>
+    <button id="showhidej" onclick="capcanve('1')" style="width:65px;height:25px;">截笔图</button>
+    <button onclick="pencolor(1)" style="width:25px;height:25px;background-color:red;">红</button>&nbsp;
+    <button onclick="pencolor(2)" style="width:25px;height:25px;background-color:blue;color:white;" >蓝</button><br>
+    <button onclick="pencolor(3)" style="width:25px;height:25px;background-color:magenta;">品</button>&nbsp;
+    <button onclick="pencolor(4)" style="width:25px;height:25px;background-color:#FFFF33;">黄</button><br>
+    <button onclick="pencolor(6)" style="width:25px;height:25px;background-color:green;color:white;">绿</button>&nbsp;
+    <button onclick="pencolor(5)" style="width:25px;height:25px;background-color:black;color:white;">黑</button><br>
+    <button onclick="linewid(2)" style="width:25px;height:25px;">２</button>&nbsp;
+    <button onclick="linewid(5)" style="width:25px;height:25px;">５</button><br>
+    <button onclick="linewid(10)" style="width:25px;height:25px;">10</button>&nbsp;
+    <button onclick="linewid(20)" style="width:25px;height:25px;">20</button>
+    <button id="showhide2" onclick="showhidebi(2)" style="width:65px;height:25px;">用白屏</button><br>
+    <button id="showcoverq" onclick="clearCanvas(2)" style="width:65px;height:25px;">清屏迹</button><br>
+    <button id="showcoverup" onclick="covermove()" style="width:65px;height:25px;">移动屏</button><br>
+    <button id="showcoverj" onclick="capcanve('2')" style="width:65px;height:25px;">截屏图</button>
    </div>    
 </div>
 
@@ -93,17 +93,17 @@
 
 <!--以下canvas截图-->
 <div id="cdd" style="background-color:#CCFFCC;border:1px;position:absolute;left:0px;top:500px;width:100px;height:80px;z-index:4;">
-    <canvas id="capcanvas10" width="50px" height="40px" onclick="opener.huifu('10')" style="position:absolute; left:0px; top:0px;border:1px solid #0066FF; "></canvas>
-    <canvas id="capcanvas11" width="50px" height="40px" onclick="opener.huifu('11')" style="position:absolute; left:50px; top:0px;border:1px solid #0066FF; "></canvas>
-    <canvas id="capcanvas12" width="50px" height="40px" onclick="opener.huifu('12')" style="position:absolute; left:0px; top:40px;border:1px solid #0066FF; "></canvas>
-    <canvas id="capcanvas13" width="50px" height="40px" onclick="opener.huifu('13')" style="position:absolute; left:50px; top:40px;border:1px solid #0066FF; "></canvas>
+    <canvas id="capcanvas10" width="50px" height="40px" onclick="huifu('10')" style="position:absolute; left:0px; top:0px;border:1px solid #0066FF; "></canvas>
+    <canvas id="capcanvas11" width="50px" height="40px" onclick="huifu('11')" style="position:absolute; left:50px; top:0px;border:1px solid #0066FF; "></canvas>
+    <canvas id="capcanvas12" width="50px" height="40px" onclick="huifu('12')" style="position:absolute; left:0px; top:40px;border:1px solid #0066FF; "></canvas>
+    <canvas id="capcanvas13" width="50px" height="40px" onclick="huifu('13')" style="position:absolute; left:50px; top:40px;border:1px solid #0066FF; "></canvas>
 
 </div>
 <div id="cddd" style="background-color:#FFFFCC;border:1px;position:absolute;left:105px;top:500px;width:100px;height:80px;z-index:5;">
-    <canvas id="capcanvas20" width="50px" height="40px" onclick="opener.huifu('20')" style="position:absolute; left:0px; top:0px;border:1px solid #0066FF; "></canvas>
-    <canvas id="capcanvas21" width="50px" height="40px" onclick="opener.huifu('21')" style="position:absolute; left:50px; top:0px;border:1px solid #0066FF; "></canvas>
-    <canvas id="capcanvas22" width="50px" height="40px" onclick="opener.huifu('22')" style="position:absolute; left:0px; top:40px;border:1px solid #0066FF; "></canvas>
-    <canvas id="capcanvas23" width="50px" height="40px" onclick="opener.huifu('23')" style="position:absolute; left:50px; top:40px;border:1px solid #0066FF; "></canvas>
+    <canvas id="capcanvas20" width="50px" height="40px" onclick="huifu('20')" style="position:absolute; left:0px; top:0px;border:1px solid #0066FF; "></canvas>
+    <canvas id="capcanvas21" width="50px" height="40px" onclick="huifu('21')" style="position:absolute; left:50px; top:0px;border:1px solid #0066FF; "></canvas>
+    <canvas id="capcanvas22" width="50px" height="40px" onclick="huifu('22')" style="position:absolute; left:0px; top:40px;border:1px solid #0066FF; "></canvas>
+    <canvas id="capcanvas23" width="50px" height="40px" onclick="huifu('23')" style="position:absolute; left:50px; top:40px;border:1px solid #0066FF; "></canvas>
 </div>
 
 <script src="/socket.io.js"></script>
@@ -124,6 +124,24 @@ socket.on('from jessy', function(msg){
         if (item == 'jessypened'){
             document.getElementById('jessypen1').innerHTML = msg['jessypened'];
         }
+        //html
+        if (item == 'curstephtm'){
+            document.getElementById('curstephtm').value = msg['curstephtm'];
+        }
+        if (item == 'showhide'){
+            document.getElementById('showhide'+msg['showhide'][0]).innerHTML = msg['showhide'][1];
+        }
+        if (item == 'capcanve'){
+            var vimg =  new Image();
+            var ctx = document.getElementById(msg['capcanve'][0]).getContext("2d");
+            ctx.clearRect(0, 0, ctx.width, ctx.height); 
+            vimg.onload = function(){ ctx.drawImage(vimg,0,0);}
+            vimg.src = msg['capcanve'][1];
+        }
+        if (item == 'covermove'){
+            document.getElementById("showcoverup").innerHTML = msg['covermove'];
+        }
+        
       }
     }
 });
@@ -134,6 +152,7 @@ function changobject(htmorsvg,num){
     catch(err){socket.emit('from control', {'jessid':jessyID,'changobject':[htmorsvg, num]});}
 }
 
+//===== jessyink control ======== begin
 function jessyslide(dir,sora){
     try{opener.jessyslide(dir,sora);}
     catch(err){socket.emit('from control', {'jessid':jessyID,'jessyslide':[dir,sora]});}
@@ -199,6 +218,43 @@ function jessylinewid(wid){
     try{opener.jessylinewid(wid);}
     catch(err){socket.emit('from control', {'jessid':jessyID,'jessylinewid':wid});}
 }
+//===== jessyink control ======== end
+
+//====== Html control ======= begin
+function nodepptslide(dir,jump){
+    try{opener.nodepptslide(dir,jump);}
+    catch(err){socket.emit('from control', {'jessid':jessyID,'nodepptslide':[dir,jump]});}
+}
+function showhidebi(which){
+    try{opener.showhidebi(which);}
+    catch(err){socket.emit('from control', {'jessid':jessyID,'showhidebi':which});}
+}
+function capcanve(which){
+    try{opener.capcanve(which);}
+    catch(err){socket.emit('from control', {'jessid':jessyID,'capcanve':which});}
+}
+function clearCanvas(which){
+    try{opener.clearCanvas(which);}
+    catch(err){socket.emit('from control', {'jessid':jessyID,'clearCanvas':which});}
+}
+function pencolor(se){
+    try{opener.pencolor(se);}
+    catch(err){socket.emit('from control', {'jessid':jessyID,'pencolor':se});}
+}
+function linewid(se){
+    try{opener.linewid(se);}
+    catch(err){socket.emit('from control', {'jessid':jessyID,'linewid':se});}
+}
+function covermove(){
+    try{opener.covermove();}
+    catch(err){socket.emit('from control', {'jessid':jessyID,'covermove':'n'});}
+}
+function huifu(which){
+    try{opener.huifu(which);}
+    catch(err){socket.emit('from control', {'jessid':jessyID,'huifu':which});}
+}
+//===== html control ======== end
+
 
 function GetRequest() {
     var url = location.search; //获取url中"?"符后的字串

@@ -48,16 +48,14 @@
     <canvas id="hcapcanvas22" width="980px" height="695px"></canvas>
     <canvas id="hcapcanvas23" width="980px" height="695px"></canvas>
     <canvas id="tmpcanvas" width="980px" height="695px"></canvas>
+    <canvas id="tmpcapcanvas" width="50px" height="40px"></canvas>
 </div>
 <div id="cw" style="position:absolute;left:10px; top:0px;">
-    <a onclick="createControlWindow()">▶▶▶</a>
+    <a onclick="createControlWindow()">▶▶▶</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a onclick="showQrcode()">▣▪▣</a>
 </div>
 <div id = 'qrcodeBox' style="display:none;position:absolute;left:100px; top:100px; width:500px; height:500px;">
 <div id="qrcode"></div><p><a id="ctrlLink" href="#" target="_blank">打开控制端</a></p></div>
-
-<div id="cw" style="position:absolute;left:10px; top:30px;">
-    <a onclick="showQrcode()">▣▪▣</a>
-</div>
 
 <script src="/socket.io.js"></script>
 <script src="/qrcode.js"></script>
@@ -98,6 +96,7 @@ socket.on('from control', function(msg){
     for(var item in msg){  
         if (item == 'changobject'){
             changobject(msg['changobject'][0],msg['changobject'][1]); }
+        //jessyInk
         if (item == 'jessyslide'){
             jessyslide(msg['jessyslide'][0],msg['jessyslide'][1]); }
         if (item == 'jessytostep'){
@@ -109,6 +108,15 @@ socket.on('from control', function(msg){
         if (item == 'jessyreset'){ jessyreset(); }
         if (item == 'jessypencolor'){ jessypencolor(msg['jessypencolor']); }
         if (item == 'jessylinewid'){ jessylinewid(msg['jessylinewid']); }
+        //html
+        if (item == 'nodepptslide'){ nodepptslide(msg['nodepptslide'][0],msg['nodepptslide'][1]); }
+        if (item == 'showhidebi'){ showhidebi(msg['showhidebi']); }
+        if (item == 'capcanve'){ capcanve(msg['capcanve']); }
+        if (item == 'clearCanvas'){ clearCanvas(msg['clearCanvas']); }
+        if (item == 'pencolor'){ pencolor(msg['pencolor']); }
+        if (item == 'linewid'){ linewid(msg['linewid']); }
+        if (item == 'covermove'){ covermove(); }
+        if (item == 'huifu'){ huifu(msg['huifu']); }
     }
   }
 });
@@ -352,23 +360,20 @@ var curnumhtm = "1";
 var curnumsvg = "1";
 
 // nodeppt html control +++++++++++++++++++++ begin
-function nodepptslide(obu,dir,jump){
+function nodepptslide(dir,jump){
     //obu -- button | dir -- prev or next 0=begin | jump=1 -- jump to
     
     if (curobject == "html") {
         var obb = document.getElementById(curobjectname);
         var ob = document.getElementById(curobjectname).contentWindow;
         var count = ob.Slide.count - 1;
-        var step = ControlWindow.document.getElementById("curstephtm");
 
         if (dir == 0 && jump == 0){
             ob.jumpSlide(0);
         }
-        if (dir == 0 && jump == 1){
-            var va = parseInt(step.value);
-            if (va < 0) {
-               va = 0;
-            }
+        if (dir == 0 && jump > 0){
+            var va = jump; //parseInt(step.value);
+            //if (va < 0) {va = 0;}
             if (va > count) {
                 va = count;
             }
@@ -382,8 +387,13 @@ function nodepptslide(obu,dir,jump){
             ob.Slide.next();
         }
         var cIndex = ob.getcurIndex();
-        step.value = cIndex;
-	    obu.blur();
+        
+        socketemit('from jessy', {'jessid':jessyID,'curstephtm':cIndex});
+        try{
+            ControlWindow.document.getElementById("curstephtm").value = cIndex;
+        }catch(err){};
+        
+	    //obu.blur();
 	    ob.focus();
 	    return false;
       }
@@ -495,35 +505,47 @@ function changobject(htmorsvg,num){
 var capnum1 = 0;
 var capnum2 = 0;
 function capcanve(which){
-    var tcv = "capcanvas" + which;
+    var tcvnum = "capcanvas" + which;
+    var tcv;
     var ttcv;
     var scv;
     if (which == '1'){
-        tcv = tcv + capnum1;
+        tcvnum = tcvnum + capnum1;
         capnum1 +=1;
         if (capnum1 > 3){ capnum1 = 0; }
         scv = document.getElementById("myCanvas");
     }else {
-	   tcv = tcv + capnum2;
+	   tcvnum = tcvnum + capnum2;
 	   capnum2 +=1;
 	   if (capnum2 > 3){ capnum2 = 0; }
         scv = document.getElementById("coverCanvas");	   
     }
-        ttcv = "h" + tcv;
-        tcv = ControlWindow.document.getElementById(tcv);
+        ttcv = "h" + tcvnum;
+        //tcv = ControlWindow.document.getElementById(tcv);
+        tcv = document.getElementById('tmpcapcanvas');
         ttcv = document.getElementById(ttcv);
 
 	var w = scv.offsetWidth;
 	var h = scv.offsetHeight;
-	var width = tcv.offsetWidth;
-	var height = tcv.offsetHeight;
-    var retCtx = tcv.getContext('2d');
+	var width = tcv.width;
+	var height = tcv.height;
+    var retCtx = ttcv.getContext('2d');
+    retCtx.clearRect(0, 0, w, h); 
+	retCtx.drawImage(scv, 0, 0, w, h, 0, 0, w, h);
+
+	retCtx = tcv.getContext('2d');
     retCtx.clearRect(0, 0, width, height); 
 	retCtx.drawImage(scv, 0, 0, w, h, 0, 0, width, height);
-	
-    retCtx = ttcv.getContext('2d');
-    retCtx.clearRect(0, 0, w, h); 
-	retCtx.drawImage(scv, 0, 0, w, h, 0, 0, w, h);  
+
+	var vimg = new Image();
+	var imgdata = tcv.toDataURL("image/png");
+	vimg.src = imgdata;
+    socketemit('from jessy', {'jessid':jessyID,'capcanve':[tcvnum, imgdata]});
+	try{
+	    ttcv = ControlWindow.document.getElementById(tcvnum).getContext("2d");
+	    ttcv.clearRect(0, 0, width, height); 
+	    ttcv.drawImage(tcv, 0, 0);
+	}catch(err){}
 }
 
 function huifu(which){
@@ -534,7 +556,7 @@ function huifu(which){
         tcv = document.getElementById("myCanvas");
     }else {
         scv = document.getElementById(scv);
-        tcv = document.getElementById("coverCanvas");	   
+        tcv = document.getElementById("coverCanvas");
     }
 	//var w = scv.offsetWidth;
 	//var h = scv.offsetHeight;
@@ -600,14 +622,19 @@ function autocap(obj){
     //var tet;
     var ttop;
     var dv;
-    function covermove(obj) {
+    function covermove() {
       if (dragcover) {
         dragcover = false;
-        obj.innerHTML ="移动屏";
+        oinnerHTML ="移动屏";
       }else {
 	    dragcover = true;
-	    obj.innerHTML ="<span style='color:red'>不动屏</span>";
+	    oinnerHTML ="<span style='color:red'>不动屏</span>";
       }
+      socketemit('from jessy', {'jessid':jessyID,'covermove':oinnerHTML});
+        try{
+            ControlWindow.document.getElementById("showcoverup").innerHTML = oinnerHTML;
+        }catch(err){};
+      
     }
     
     function linewid(se){
@@ -741,7 +768,6 @@ function autocap(obj){
             case 2:
             whichcva = "coverCanvas";
             break;
-	
         }
         var c=document.getElementById(whichcva); 
         var ctx=c.getContext("2d");
@@ -749,11 +775,12 @@ function autocap(obj){
         //c.height=c.height;  
     }  
 
-    function showhidebi(obj,which)
+    function showhidebi(which)
     {   
         var whichcv;
         var whichc;
         var sh;
+        var inHtml;
         switch(which) {
             case 1:
             whichcv = "<span style='color:red'>消画笔</span>";
@@ -766,8 +793,14 @@ function autocap(obj){
             sh=show1;
             break;
         }
-        if(sh==0){ sh=1;showCanvas(which);obj.innerHTML=whichcv }
-        else{ sh=0;hideCanvas(which);obj.innerHTML=whichc }
+        if(sh==0){ sh=1;showCanvas(which); inHtml=whichcv;  }
+        else{ sh=0; hideCanvas(which); inHtml=whichc; }
+        
+        socketemit('from jessy', {'jessid':jessyID,'showhide':[which, inHtml]});
+        try{
+            ControlWindow.document.getElementById("showhide"+which).innerHTML = inHtml;
+        }catch(err){};
+        
         switch(which) {
             case 1:
             show=sh;

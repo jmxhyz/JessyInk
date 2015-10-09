@@ -1,0 +1,252 @@
+<!--
+    Powered By nodePPT - This is probably the best web presentation tool so far!
+    version: 1.2.5
+    site: https://github.com/ksky521/nodePPT
+-->
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>nodeppt markdown 演示 - By Theo Wang</title>
+    <link rel="stylesheet" media="all" href="nodeppt.css">
+    
+<link rel="stylesheet" href="theme.moon.css">
+</head>
+<body>
+<div class="slides">
+    <slides id="container">
+        <slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>封面样式</h1>
+<h2>h1是作为封面用的，内部的都用h2</h2>
+<p><small>演讲者：xxx</small></p>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article class="flexbox vleft">
+<h1>样式展示</h1>
+<blockquote>
+<p>nodePPT 让每个人都爱上做分享！</p>
+</blockquote>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h2>为什么选择nodePPT</h2>
+
+</hgroup><article>
+
+<ul class="rollIn">
+<li>基于GFM的markdown语法编写</li>
+<li>支持html混排，再复杂的demo也可以做！</li>
+<li>导出网页或者pdf更容易分享</li>
+<li>支持18种转场动画，可以设置单页动画</li>
+<li>支持单页背景图片</li>
+<li>多种模式：overview模式，双屏模式，socket远程控制，摇一摇换页</li>
+<li>可以使用画板，可以使用note做备注</li>
+<li>支持语法高亮，自由选择highlight样式</li>
+<li>可以单页ppt内部动画，单步动画</li>
+<li>支持进入/退出回调，做在线demo很方便</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h2>基本语法指南</h2>
+
+</hgroup><article>
+
+<pre><code class="markdown">/* 先写总的配置 */
+title: 这是title，网页名称
+speaker: 演讲者名称
+url: https://github.com/ksky521/nodePPT
+transition: 全局转场动画
+files: 引入的js和css文件，多个以半角逗号隔开
+hightStyle: 代码高亮样式，默认monokai_sublime
+usemathjax: yes 启用MathJax渲染公式
+
+/* 以&#91;slide&#93; 隔开每个ppt页面 */
+&#91;slide&#93;
+## 二级标题
+这里写内容即可
+
+&#91;slide&#93;
+...
+</code>
+</pre>
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h2>支持.class/#id/自定义属性样式</h2>
+
+</hgroup><article>
+
+<pre><code class="html">使用：.class{:.class}
+使用：#id{:#id}
+组合使用：{:.class.class2 width=&quot;200px&quot;}
+父元素样式使用&amp;：{:&amp;.class}
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h2>主页面样式</h2>
+<h3>----是上下分界线</h3>
+
+</hgroup><article>
+
+<p>nodeppt是基于nodejs写的支持 <strong>Markdown!</strong> 语法的网页PPT</p>
+<p>nodeppt：<a href="https://github.com/ksky521/nodePPT" target="_blank">https://github.com/ksky521/nodePPT</a></p>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><div class="subSlide"><hgroup>
+<h2>这是一个列表</h2>
+
+</hgroup><article>
+
+<ul>
+<li>上下左右方向键翻页<ul class="moveIn">
+<li>列表支持渐显动画</li>
+<li>支持多级列表</li>
+<li>这个动画是moveIn</li>
+</ul>
+</li>
+<li>完全基于markdown语法哦</li>
+</ul>
+
+</article></div>
+<div class="subSlide"><hgroup>
+<h2>这是一个数字类型列表，这是一个subslide页面</h2>
+
+</hgroup><article>
+
+<ol class="rollIn">
+<li>数字列表</li>
+<li>数字列表</li>
+<li>数字列表，这是一个subslide页面</li>
+</ol>
+
+</article></div></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h2>列表渐显动画：fadeIn</h2>
+
+</hgroup><article>
+
+<ul class="fadeIn">
+<li>列表支持渐显动画哦<ul>
+<li>使用方法</li>
+<li>markdown列表第一条加上：{:&amp;.动画类型}</li>
+</ul>
+</li>
+<li>动画类型<ul>
+<li>fadeIn</li>
+<li>rollIn</li>
+<li>bounceIn</li>
+<li>moveIn</li>
+<li>zoomIn</li>
+</ul>
+</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h2>列表渐显动画：zoomIn</h2>
+
+</hgroup><article>
+
+<ul class="zoomIn">
+<li>列表支持渐显动画哦</li>
+<li>动画类型<ul>
+<li>fadeIn</li>
+<li>rollIn</li>
+<li>bounceIn</li>
+<li>moveIn</li>
+<li>zoomIn</li>
+</ul>
+</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h2>列表渐显动画：bounceIn</h2>
+
+</hgroup><article>
+
+<ul class="bounceIn">
+<li>列表支持渐显动画哦</li>
+<li>动画类型<ul>
+<li>fadeIn</li>
+<li>rollIn</li>
+<li>bounceIn</li>
+<li>moveIn</li>
+<li>zoomIn</li>
+</ul>
+</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h2>使用画笔</h2>
+<h3>使用画笔做标记哦~你也可以随便作画啊！</h3>
+
+</hgroup><article>
+
+<p>按下键盘【P】键。按下鼠标左键，在此处乱花下看看效果。</p>
+<p>按下键盘【C】键。清空画板</p>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h2>更多玩法</h2>
+
+</hgroup><article>
+
+<p><a href="https://github.com/ksky521/nodePPT" target="_blank">https://github.com/ksky521/nodePPT</a></p>
+<p>什么？这些功能还不够用？</p>
+<p>socket远程控制可以在手机上摇一摇换页哦~</p>
+<p>查看项目目录ppts获取更多帮助信息</p>
+
+</article></section></slide>
+        
+
+        <!--slide class="slide logoslide dark nobackground">
+            <article class="flexbox vcenter">
+              <h2 style="color: white;">体察人间百态，<br>体悟人生真谛，<br>体验人生智慧。</h2>
+            </article>
+          </slide-->
+        <div class="slideTip" id="tip"></div>
+    </slides>
+</div>
+<canvas id="drawBoard" class="draw-board" width="900" height="700"></canvas>
+<div class="progress"><span id="progress"></span></div>
+<div id="_buttons">
+    <div class="_btn-box" id="_btn-box" style="display:none;">
+        <button class="fa fa-arrow-circle-left" id="_btn-prev"></button>
+        <button class="fa fa-arrow-circle-right" id="_btn-next"></button>
+        <button class="fa fa-paint-brush" id="_btn-brush"></button>
+        <button class="fa fa-compress" id="_btn-overview" data-toggle="fa fa-expand"></button>
+    </div>
+    <button class="fa fa-bars" id="_btn-bar"  data-toggle="fa fa-close"></button>
+</div>
+
+<script src="nodeppt.js"></script>
+<script>
+Slide.init({
+    containerID: 'container',
+    drawBoardID: 'drawBoard',
+    slideClass: '.slide',
+    buildClass: '.build',
+    progressID: 'progress',
+    transition: 'move',
+    width: 1100,
+    dir: './',
+    
+    //打开下面的注释就开启postMessage方式
+    //访问网址127.0.0.1:8080/ppt/demo#client
+    control:{
+        type: 'postMessage',
+        args:{
+            isControl:  false
+        }
+    },
+    
+    tipID: 'tip'
+});
+</script>
+
+<!--placeholder-->
+</body>
+</html>
