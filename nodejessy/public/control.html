@@ -116,10 +116,10 @@ socket.on('from jessy', function(msg){
     if (msg['jessid'] == jessyID){
       for(var item in msg){  
         if (item == 'jessycurslide'){
-            document.getElementById("jessycurslide").value = msg['jessycurslide'];
+            document.getElementById('jessycurslide').value = msg['jessycurslide'];
         }
         if (item == 'jessycureffat'){
-            document.getElementById("jessycureffat").value = msg['jessycureffat'];
+            document.getElementById('jessycureffat').value = msg['jessycureffat'];
         }
         if (item == 'jessypened'){
             document.getElementById('jessypen1').innerHTML = msg['jessypened'];
@@ -133,13 +133,13 @@ socket.on('from jessy', function(msg){
         }
         if (item == 'capcanve'){
             var vimg =  new Image();
-            var ctx = document.getElementById(msg['capcanve'][0]).getContext("2d");
+            var ctx = document.getElementById(msg['capcanve'][0]).getContext('2d');
             ctx.clearRect(0, 0, ctx.width, ctx.height); 
-            vimg.onload = function(){ ctx.drawImage(vimg,0,0);}
+            vimg.onload = function(){ ctx.drawImage(vimg,0,0);};
             vimg.src = msg['capcanve'][1];
         }
         if (item == 'covermove'){
-            document.getElementById("showcoverup").innerHTML = msg['covermove'];
+            document.getElementById('showcoverup').innerHTML = msg['covermove'];
         }
         
       }
@@ -201,7 +201,7 @@ function jessymove(dir){
 function jessyreset(){
     jessyMouse = false;
     try{opener.jessyreset();}
-    catch(err){socket.emit('from control', {'jessid':jessyID,'jessyreset':""});}
+    catch(err){socket.emit('from control', {'jessid':jessyID,'jessyreset':'n'});}
 }
 
 function jessypened(penorclear){
@@ -257,14 +257,14 @@ function huifu(which){
 
 
 function GetRequest() {
-    var url = location.search; //获取url中"?"符后的字串
+    var url = location.search; //获取url中'?'符后的字串
     var theRequest = new Object();
-    if (url.indexOf("?") != -1) {
+    if (url.indexOf('?') != -1) {
         var str = url.substr(1);
-        strs = str.split("&");
+        strs = str.split('&');
         for(var i = 0; i < strs.length; i ++) {
             //console.log(strs);
-            theRequest[strs[i].split("=")[0]]=strs[i].split("=")[1];
+            theRequest[strs[i].split('=')[0]]=strs[i].split('=')[1];
         }
     }
     return theRequest;
@@ -278,7 +278,7 @@ else {jessyID = 'no';}
 if (Request['name']) {
     //console.log(Request['name']);
     document.title=decodeURI(Request['name']) + ' Control'; }
-else{document.title="Educational Control";}
+else{document.title='Educational Control';}
 </script>
 
 </body>
