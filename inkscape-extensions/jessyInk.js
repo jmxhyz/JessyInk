@@ -611,6 +611,19 @@ function getElementsByPropertyNS(node, namespace, name)
 	return elems;
 }
 
+/** Function jumpto effect
+ *
+ *  @param num (effect order) 
+ */
+function jumpto(num)
+{
+    if (num == 0){
+        activeEffect=1; dispatchEffects(-1);
+    }else{
+        activeEffect=num-1; dispatchEffects(1);
+    }
+}
+
 /** Function to dispatch the next effect, if there is none left, change the slide.
  *
  *  @param dir direction of the change (1 = forwards, -1 = backwards)
