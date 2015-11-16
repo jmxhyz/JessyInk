@@ -28,26 +28,26 @@
 
 
     <div id="canvanlayer" style="cursor:url(pen.ico),pointer;display: none;position:absolute; left:0px; top:0px;width:980px; height:695px;border:1px solid #ffc3c3; z-index:1;">
-        <canvas id="myCanvas"  onmousedown="mousedown(event,this)"  onmouseup="mouseup(this)"  onmousemove="movedraw(event,this)" onmouseout="cnvs_clearCoordinates()" width="980px" height="695px" style="margin-top:0px;margin-left:0px; ">  
+        <canvas id="myCanvas"  onmousedown="mousedown(event,this)"  onmouseup="mouseup(this)"  onmousemove="movedraw(event,this)" onmouseout="cnvs_clearCoordinates()" width='980px' height='695px' style="margin-top:0px;margin-left:0px;">  
         </canvas>
     </div>
     <div id="canvancover" style="background-color:#FFFFFF;cursor:url(pen.ico),pointer;display: none;position:absolute; left:0px; top:0px;width:980px; height:695px;border:1px solid #00ff00; z-index:2;">
-        <canvas id="coverCanvas"  onmousedown="mousedown(event,this)"  onmouseup="mouseup(this)"  onmousemove="movedraw(event,this)" onmouseout="cnvs_clearCoordinates()" width="980px" height="695px" style="margin-top:0px;margin-left:0px;">  
+        <canvas id="coverCanvas"  onmousedown="mousedown(event,this)"  onmouseup="mouseup(this)"  onmousemove="movedraw(event,this)" onmouseout="cnvs_clearCoordinates()" width='980px' height='695px' style="margin-top:0px;margin-left:0px;">
         </canvas>
     </div>
 </div>
 
 <!--以下canvas截图-->
 <div id="hidcv" style="display:none">
-    <canvas id="hcapcanvas10" width="980px" height="695px"></canvas>
-    <canvas id="hcapcanvas11" width="980px" height="695px"></canvas>
-    <canvas id="hcapcanvas12" width="980px" height="695px"></canvas>
-    <canvas id="hcapcanvas13" width="980px" height="695px"></canvas>
-    <canvas id="hcapcanvas20" width="980px" height="695px"></canvas>
-    <canvas id="hcapcanvas21" width="980px" height="695px"></canvas>
-    <canvas id="hcapcanvas22" width="980px" height="695px"></canvas>
-    <canvas id="hcapcanvas23" width="980px" height="695px"></canvas>
-    <canvas id="tmpcanvas" width="980px" height="695px"></canvas>
+    <canvas id="hcapcanvas10" width='980px' height='695px'></canvas>
+    <canvas id="hcapcanvas11" width='980px' height='695px'></canvas>
+    <canvas id="hcapcanvas12" width='980px' height='695px'></canvas>
+    <canvas id="hcapcanvas13" width='980px' height='695px'></canvas>
+    <canvas id="hcapcanvas20" width='980px' height='695px'></canvas>
+    <canvas id="hcapcanvas21" width='980px' height='695px'></canvas>
+    <canvas id="hcapcanvas22" width='980px' height='695px'></canvas>
+    <canvas id="hcapcanvas23" width='980px' height='695px'></canvas>
+    <canvas id="tmpcanvas" width='980px' height='695px'></canvas>
     <canvas id="tmpcapcanvas" width="50px" height="40px"></canvas>
 </div>
 <div id="cw" style="position:absolute;left:10px; top:0px;">
@@ -868,14 +868,34 @@ var docfilename;
     function repos(){
         //return;
         getwah();
+        var new_width = width;
+        var new_height = height - 40;
+        tmpw = parseInt(new_height * 4 / 3);
+        if (width >= tmpw){new_width = tmpw;}
+        else{ tmph = parseInt(new_width * 3 / 4);
+              new_height = tmph; };
         
-        var now_left=(width-980)/2;
-        var now_top=(height-695)/2;
+        var now_left=(width-new_width)/2;
+        var now_top=(height-new_height)/2;
         if (true){
+           var mywindow = new Array('impressdiv','impresshtm1','impresshtm2',
+                                    'impresshtm3','impresssvg3','impresssvg2','impresssvg1','canvanlayer','canvancover');
+           var mycanwin = new Array('myCanvas','coverCanvas','hcapcanvas10','hcapcanvas11',
+                                    'hcapcanvas12','hcapcanvas13','hcapcanvas20','hcapcanvas21','hcapcanvas22','hcapcanvas23','tmpcanvas');
+           for (var myw in mywindow){
+           //    console.log(mywindow[myw]);
+               document.getElementById(mywindow[myw]).style.width = (new_width + 'px');
+               document.getElementById(mywindow[myw]).style.height =(new_height + 'px');
+            }
+           for (var myw in mycanwin){
+               document.getElementById(mycanwin[myw]).width = new_width;
+               document.getElementById(mycanwin[myw]).height =new_height;
+           }
         //if (now_left>180) {
 	       //document.getElementById("impress").style.left=(now_left + "px");
 	       document.getElementById("impressdiv").style.left=(now_left + "px");
            document.getElementById("impressdiv").style.top=(now_top + "px");
+
            //document.getElementById("canvanlayer").style.left=(now_left + "px");
            //document.getElementById("canvancover").style.left=(now_left + "px");
         }}
