@@ -613,14 +613,17 @@ function getElementsByPropertyNS(node, namespace, name)
 
 /** Function jumpto effect
  *
- *  @param num (effect order) 
+ *  @param slidenum  effectnum (effect order) 
  */
-function jumpto(num)
+function jumpto(slidenum, effectnum)
 {
-    if (num == 0){
+    if (activeSlide != slidenum){
+        slideSetActiveSlide(slidenum);
+    }
+    if (effectnum == 0){
         activeEffect=1; dispatchEffects(-1);
     }else{
-        activeEffect=num-1; dispatchEffects(1);
+        activeEffect=effectnum-1; dispatchEffects(1);
     }
 }
 
