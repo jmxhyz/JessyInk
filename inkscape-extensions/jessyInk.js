@@ -611,6 +611,138 @@ function getElementsByPropertyNS(node, namespace, name)
 	return elems;
 }
 
+/** Function mydrag effect
+ *
+ *  Element onmousedown='mydrag(evt)'
+ *  add transform='matrix(1,0,0,1,0,0)'
+ */
+var selectedElement = 0;
+var currentX = 0;
+var currentY = 0;
+var currentMatrix = 0;
+var my_rotate = 0;
+var my_matrix, my1_matrix;
+var mySVG = document.getElementsByTagName('svg')[0];
+
+function mydrag(evt) {
+      //svg = document.querySelector('svg');
+      my_rotate = 0;
+      if (evt.ctrlKey){ my_rotate = 1 * Math.PI / 180; }
+      if (evt.shiftKey){ my_rotate = -1 * Math.PI / 180; }
+      if (evt.button==2){my_rotate = 1 * Math.PI / 180;} //right click
+      var sCTM = mySVG.getScreenCTM();
+      var pt = mySVG.createSVGPoint();
+      pt.x = evt.clientX;
+      pt.y = evt.clientY;
+      var pnt = pt.matrixTransform(sCTM.inverse());
+      currentX = pnt.x;
+      currentY = pnt.y;
+      my_transform  = mySVG.createSVGTransform();
+      my_matrix     = mySVG.createSVGMatrix();
+      my1_matrix    = mySVG.createSVGMatrix();
+      selectedElement = evt.target;
+      if (selectedElement.tagName == 'tspan'){
+        selectedElement = selectedElement.parentElement;
+      }
+      selectedElement.parentNode.appendChild( selectedElement );
+      currentMatrix = selectedElement.getAttributeNS(null, 'transform')
+
+      if (currentMatrix) {
+        // currentMatrix = new Array(1,0,0,1,0,0);
+        if(currentMatrix.indexOf('translate') >= 0){
+           currentMatrixCTM = currentMatrix.slice(10,-1).split(',');
+           my_matrix.e = parseFloat(currentMatrixCTM[0])
+           my_matrix.f = parseFloat(currentMatrixCTM[1]);
+        }else{
+          currentMatrix = currentMatrix.slice(7,-1).split(',');
+              for(var i=0; i < currentMatrix.length; i++) {
+                currentMatrix[i] = parseFloat(currentMatrix[i]);
+                if (currentMatrix[i]){
+                }else{
+                    currentMatrix[i] = 0;
+                }
+              }
+              my_matrix.a = currentMatrix[0];
+              my_matrix.b = currentMatrix[1];
+              my_matrix.c = currentMatrix[2];
+              my_matrix.d = currentMatrix[3];
+              my_matrix.e = currentMatrix[4];
+              my_matrix.f = currentMatrix[5];
+            }
+      }else{
+        currentMatrix = new Array(1,0,0,1,0,0);
+      }
+
+      selectedElement.setAttributeNS(null, 'onmousemove', 'moveElement(evt)');
+      selectedElement.setAttributeNS(null, 'onmouseout', 'deselectElement(evt)');
+      selectedElement.setAttributeNS(null, 'onmouseup', 'deselectElement(evt)');
+}
+
+function moveElement(evt) {
+      sCTM = mySVG.getScreenCTM();
+      pt = mySVG.createSVGPoint();
+      pt.x = evt.clientX;
+      pt.y = evt.clientY;
+      pnt = pt.matrixTransform(sCTM.inverse());
+      var dx = pnt.x - currentX;
+      var dy = pnt.y - currentY;
+      currentX = pnt.x;
+      currentY = pnt.y;
+      if (my_rotate != 0) {
+          t = my_rotate;
+          my1_matrix.a = Math.cos(t);
+          my1_matrix.b = Math.sin(t);
+          my1_matrix.c = -Math.sin(t);
+          my1_matrix.d = Math.cos(t);
+          my1_matrix.e = 0;
+          my1_matrix.f = 0;
+          my_matrix = my_matrix.multiply(my1_matrix);
+
+          var elPos = selectedElement.getBoundingClientRect(); //left,top
+          //var elPos = selectedElement.getBBox(); //x,y
+          pt.y = elPos.top + elPos.height/2;
+          pt.x = elPos.left + elPos.width/2;
+          sCTM = selectedElement.getScreenCTM();
+          pnt = pt.matrixTransform(sCTM.inverse());
+          x = pnt.x;
+          y = pnt.y;
+          //console.log('bb.x: ' + x + '  y:' + y);
+          
+          r = Math.sqrt(x*x + y*y);
+          delta = Math.PI/2 - t - Math.atan2(y,x);
+          my1_matrix.a = 1;
+          my1_matrix.b = 0;
+          my1_matrix.c = 0;
+          my1_matrix.d = 1;
+          my1_matrix.e = (x - r * Math.sin(delta));
+          my1_matrix.f = -(r * Math.cos(delta) -y);
+          my_matrix = my_matrix.multiply(my1_matrix);
+      }else{
+          my_matrix.e += dx;
+          my_matrix.f += dy;
+      }
+      //console.log('my1_matrix');
+      //console.log(my1_matrix);
+      var my_A_Matrix = new Array(0,0,0,0,0,0);
+      my_A_Matrix[0] = my_matrix.a;
+      my_A_Matrix[1] = my_matrix.b;
+      my_A_Matrix[2] = my_matrix.c;
+      my_A_Matrix[3] = my_matrix.d;
+      my_A_Matrix[4] = my_matrix.e;
+      my_A_Matrix[5] = my_matrix.f;
+      selectedElement.setAttributeNS(null, 'transform', 'matrix(' + my_A_Matrix.join(',') + ')');
+}
+
+function deselectElement(evt) {
+      if(selectedElement != 0){
+          selectedElement.removeAttributeNS(null, 'onmousemove');
+          selectedElement.removeAttributeNS(null, 'onmouseout');
+          selectedElement.removeAttributeNS(null, 'onmouseup');
+          selectedElement = 0;
+          }
+}
+
+
 /** Function jumpto effect
  *
  *  @param slidenum  effectnum (effect order) 
@@ -1247,14 +1379,15 @@ function getDefaultKeyCodeDictionary()
  */
 function mouseHandlerDispatch(evnt, action)
 {
+    if (selectedElement != 0 && action != 2 ){return true;}  //leejungjun mydrag
 	if (!evnt)
 		evnt = window.event;
 
 	var video = (evnt.target || evnt.srcElement);
 	if(video.tagName == 'video')
 	{
-		//if(evnt.type == "mousemove") return false;
-		if(evnt.type != "mousemove" && evnt.button == 0)  //left button
+		//if(evnt.type == 'mousemove') return false;
+		if(evnt.type != 'mousemove' && evnt.button == 0)  //left button
 			{video.pause();  }
 		if(evnt.button == 2)  //right button
 			{video.play(); return false; }
