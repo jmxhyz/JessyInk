@@ -2921,6 +2921,20 @@ function handleElement(node)
 			videoNode.setAttribute('type', 'application/x-shockwave-flash');
 			videoNode.setAttribute('allowfullscreen', 'true');
 			videoNode.setAttribute('wmode', 'opaque');
+		}
+		if (url.match(/\.html*$/) ){
+			var videoNode = document.createElementNS('http://www.w3.org/1999/xhtml', 'iframe');
+			videoNode.setAttribute('src', url);
+			videoNode.setAttribute('type', 'text/html');
+			videoNode.setAttribute('scrolling', 'yes');
+			width -= 10;
+			height -= 10;
+		}
+		if (url.match(/\.svg$/)) {
+			var videoNode = document.createElementNS('http://www.w3.org/1999/xhtml', 'embed');
+			videoNode.setAttribute('src', url);
+			videoNode.setAttribute('type', 'image/svg+xml');
+			videoNode.setAttribute('style','border:none;');
 		}else{
 			var videoNode = document.createElementNS('http://www.w3.org/1999/xhtml', 'video');
 			videoNode.setAttribute('src', url);
