@@ -68,6 +68,8 @@ function jessyInk_core_mouseHandler_zoomControl(obj)
 	 */
 	obj.mouseclick = function (e)
 	{
+	return false;
+	/*
 		var elem = obj.getAdHocViewBbox(slides[activeSlide]['viewGroup'], obj.getCoords(e));
 
 		processingEffect = true;
@@ -92,6 +94,7 @@ function jessyInk_core_mouseHandler_zoomControl(obj)
 		effect(1);
 
 		return false;
+	*/
 	}
 
 	/** Function to search for the element the user clicked on.
