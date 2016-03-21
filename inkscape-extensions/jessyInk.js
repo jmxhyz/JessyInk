@@ -2922,7 +2922,7 @@ function handleElement(node)
 			videoNode.setAttribute('allowfullscreen', 'true');
 			videoNode.setAttribute('wmode', 'opaque');
 		}
-		if (url.match(/\.html*$/) ){
+		else if (url.match(/\.html*$/) ){
 			var videoNode = document.createElementNS('http://www.w3.org/1999/xhtml', 'iframe');
 			videoNode.setAttribute('src', url);
 			videoNode.setAttribute('type', 'text/html');
@@ -2930,7 +2930,7 @@ function handleElement(node)
 			width -= 10;
 			height -= 10;
 		}
-		if (url.match(/\.svg$/)) {
+		else if (url.match(/\.svg$/)) {
 			var videoNode = document.createElementNS('http://www.w3.org/1999/xhtml', 'embed');
 			videoNode.setAttribute('src', url);
 			videoNode.setAttribute('type', 'image/svg+xml');
