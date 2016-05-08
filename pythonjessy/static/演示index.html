@@ -1,0 +1,1354 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Educational Panel</title>
+<style>
+#cw a {color: #aaaaaa}
+#cw a:link { color: #aaaaaa; text-decoration: none;}
+#cw a:visited {text-decoration: none; color: #aaaaaa;}
+#cw a:hover {text-decoration: none; color:#eb0102;}
+#cw a:active {text-decoration: none; color:#eb0102;}
+</style>
+</head>
+<body>
+</head><body onresize="repos()" onload="setpos()" onkeypress="rekey(event)" on__click="sfocus()">
+
+<div id="impressdiv" style="position:absolute;left:10px; top:10px; width:980px; height:695px; border:1px solid #c3c3c3;">
+
+    <iframe id="impresshtm1" src="" type="text/html" style="border:none;position:absolute;left:0px; top:0px; width:980px; height:695px;margin-top:0px;margin-left:0px;cursor:url(pen.ico),pointer;"></iframe>
+    <iframe id="impresshtm2" src="" type="text/html" style="border:none;position:absolute;left:0px; top:0px; width:980px; height:695px;margin-top:0px;margin-left:0px;cursor:url(pen.ico),pointer;"></iframe>
+    <iframe id="impresshtm3" src="" type="text/html" style="border:none;position:absolute;left:0px; top:0px; width:980px; height:695px;margin-top:0px;margin-left:0px;cursor:url(pen.ico),pointer;"></iframe>
+
+    <iframe id="impresssvg3" src="" type="image/svg+xml" style="border:none;position:absolute;left:0px; top:0px; width:980px; height:695px;margin-top:0px;margin-left:0px;cursor:url(pen.ico),pointer;"></iframe>
+    <iframe id="impresssvg2" src="" type="image/svg+xml" style="border:none;position:absolute;left:0px; top:0px; width:980px; height:695px;margin-top:0px;margin-left:0px;cursor:url(pen.ico),pointer;"></iframe>
+    <iframe id="impresssvg1" src="" type="image/svg+xml" style="border:none;position:absolute;left:0px; top:0px; width:980px; height:695px;margin-top:0px;margin-left:0px;cursor:url(pen.ico),pointer;"></iframe>
+    
+    <!--iframe id="impress" src="kejian.html#/overview" type="text/html" style="border:none;position:absolute;left:0px; top:0px; width:980px; height:695px;margin-top:0px;margin-left:0px;cursor:url(pen.ico),pointer;"></iframe-->
+
+
+    <div id="canvanlayer" style="cursor:url(pen.ico),pointer;display: none;position:absolute; left:0px; top:0px;width:980px; height:695px;border:1px solid #ffc3c3; z-index:1;">
+        <canvas id="myCanvas"  onmousedown="mousedown(event,this)"  onmouseup="mouseup(this)"  onmousemove="movedraw(event,this)" onmouseout="cnvs_clearCoordinates()" width='980px' height='695px' style="margin-top:0px;margin-left:0px;">  
+        </canvas>
+    </div>
+    <div id="canvancover" style="background-color:#FFFFFF;cursor:url(pen.ico),pointer;display: none;position:absolute; left:0px; top:0px;width:980px; height:695px;border:1px solid #00ff00; z-index:2;">
+        <canvas id="coverCanvas"  onmousedown="mousedown(event,this)"  onmouseup="mouseup(this)"  onmousemove="movedraw(event,this)" onmouseout="cnvs_clearCoordinates()" width='980px' height='695px' style="margin-top:0px;margin-left:0px;">
+        </canvas>
+    </div>
+</div>
+
+<!--以下canvas截图-->
+<div id="hidcv" style="display:none">
+    <canvas id="hcapcanvas10" width='980px' height='695px'></canvas>
+    <canvas id="hcapcanvas11" width='980px' height='695px'></canvas>
+    <canvas id="hcapcanvas12" width='980px' height='695px'></canvas>
+    <canvas id="hcapcanvas13" width='980px' height='695px'></canvas>
+    <canvas id="hcapcanvas20" width='980px' height='695px'></canvas>
+    <canvas id="hcapcanvas21" width='980px' height='695px'></canvas>
+    <canvas id="hcapcanvas22" width='980px' height='695px'></canvas>
+    <canvas id="hcapcanvas23" width='980px' height='695px'></canvas>
+    <canvas id="tmpcanvas" width='980px' height='695px'></canvas>
+    <canvas id="tmpcapcanvas" width="50px" height="40px"></canvas>
+</div>
+<div id="cw" style="position:absolute;left:10px; top:0px;">
+    <a onclick="createControlWindow()">▶▶▶</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a onclick="showQrcode()">▣▪▣</a>
+</div>
+<div id = 'qrcodeBox' style="display:none;position:absolute;left:100px; top:100px; width:500px; height:500px;">
+<div id="qrcode" onclick="showQrcode()"></div><p><a id="ctrlLink" href="#" target="_blank">打开控制端</a></p></div>
+
+<script src="/qrcode.js"></script>
+<script type="text/javascript">
+try{
+    var ctrlurl;
+    filename = GetUrlFileName(window.location.href);
+    ctrlurl = window.location.href.replace(filename + "index.html","control.html");
+    ctrlurl = ctrlurl.replace(filename + "index.htm","control.html");
+    aa = ctrlurl.split('/');
+    ctrlurl = 'http://' + aa[2] + '/' + aa[aa.length-1];
+
+    var qrcode = new QRCode('qrcode', {
+                            text: ctrlurl,
+                            width: 440,
+                            height: 440,
+                            typeNumber : 1,
+                            correctLevel: 1
+                        });
+    document.getElementById('ctrlLink').href = ctrlurl;
+
+    var showQrcode;
+    showQrcode = function() {
+        if (showQrcode.isShow) {
+            document.getElementById('qrcodeBox').style.display = 'none';
+            showQrcode.isShow = false;
+        } else {
+            document.getElementById('qrcodeBox').style.display = 'block';
+            showQrcode.isShow = true;
+        }
+    };
+
+}catch(err){};
+
+function postData(data){ // 转成post需要的字符串.
+    var str = "";
+    for(var prop in data){
+        str += prop + "=" + data[prop] + "&"
+    }
+    return str;
+}
+
+var msgid = 1;
+var timeout = 500;
+function socketconnect(){
+  try{
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/msg/connect", true); //同步方式,异步把false改为true  
+    xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+    xhr.onreadystatechange = function(){
+        var XMLHttpReq = xhr;
+        if (XMLHttpReq.readyState == 4) {
+            if (XMLHttpReq.status == 200) {
+                var res = JSON.parse(XMLHttpReq.responseText);
+                console.log(res);
+                myData = res["returnjson"];
+                if (myData > 0) {
+                    if (myData>msgid){msgid = myData+1;}
+                }
+            }
+        }
+    };
+    data = {"act":"connect"};
+    xhr.send(postData(data));
+  }catch(err){}
+}
+sc = socketconnect();
+timer_sc = setInterval(socketconnect(), 30000);
+
+
+function socketon(filter, id){
+  //return {'jessid':2,'jessyslide':[22,44]};
+    var xhr = new XMLHttpRequest();
+     
+    xhr.open("POST", "/msg/hear", true);
+    xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+    xhr.onreadystatechange = function(){
+        var XMLHttpReq = xhr;
+        if (XMLHttpReq.readyState == 4) {
+            if (XMLHttpReq.status == 200) {
+                var res = JSON.parse(XMLHttpReq.responseText);
+                console.log(res);
+                myData = res["returnjson"];
+                if (myData == "hear none") {
+                    //alert("没有消息！");
+                    timeout = 500;
+                    console.log(myData);
+                } else {
+                    timeout = 30;
+                    msgid++;
+                    if (myData["act"] == filter && myData["jessid"]==id){
+                        //alert(myData);
+                        //$("#chattext").val(JSON.stringify(myData) + $("#chattext").val());
+                        socketonmsg(myData);
+                    }
+                }
+            }
+        }
+    };
+    data = {"msgid":msgid};
+    xhr.send(postData(data));
+}
+
+var timer_son;
+function to_socketon(){
+    window.clearTimeout(timer_son);
+    msg = socketon("from control", jessyID);
+    timer_son = window.setTimeout(to_socketon, timeout);
+}
+
+function socketonmsg(msg){
+    //console.log(msg);
+  if (msg['jessid'] == jessyID){
+    for(var item in msg){  
+        if (item == 'changobject'){
+            changobject(msg['changobject'][0],msg['changobject'][1]); }
+        //jessyInk
+        if (item == 'jessyslide'){
+            jessyslide(msg['jessyslide'][0],msg['jessyslide'][1]); }
+        if (item == 'jessytostep'){
+            jessytostep(msg['jessytostep'][0],msg['jessytostep'][1]); }
+        if (item == 'jessypened'){ jessypened(msg['jessypened']); }
+        if (item == 'jessyzoom'){ jessyzoom(msg['jessyzoom']); }
+        if (item == 'jessyrotate'){ jessyrotate(msg['jessyrotate']); }
+        if (item == 'jessymove'){ jessymove(msg['jessymove']); }
+        if (item == 'jessyreset'){ jessyreset(); }
+        if (item == 'jessypencolor'){ jessypencolor(msg['jessypencolor']); }
+        if (item == 'jessylinewid'){ jessylinewid(msg['jessylinewid']); }
+        //html
+        if (item == 'nodepptslide'){ nodepptslide(msg['nodepptslide'][0],msg['nodepptslide'][1]); }
+        if (item == 'showhidebi'){ showhidebi(msg['showhidebi']); }
+        if (item == 'capcanve'){ capcanve(msg['capcanve']); }
+        if (item == 'clearCanvas'){ clearCanvas(msg['clearCanvas']); }
+        if (item == 'pencolor'){ pencolor(msg['pencolor']); }
+        if (item == 'linewid'){ linewid(msg['linewid']); }
+        if (item == 'covermove'){ covermove(); }
+        if (item == 'huifu'){ huifu(msg['huifu']); }
+    }
+  }
+}
+
+function socketemit(key, msg){
+  try{
+  //var cd = {'jessid':2,'jessyslide':[22,44]};
+    var xhr = new XMLHttpRequest();
+     
+    xhr.open("POST", "/msg/say", true);
+    xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+    xhr.onreadystatechange = function(){
+        var XMLHttpReq = xhr;
+        if (XMLHttpReq.readyState == 4) {
+            if (XMLHttpReq.status == 200) {
+                var res = JSON.parse(XMLHttpReq.responseText);
+                myData = res["returnjson"];
+                if (myData == "say ok") {
+                    //alert("数据已成功保存！");
+                    console.log(myData);
+                }
+            }
+        }
+    };
+    var md = JSON.stringify(msg);
+    data = {"act":key,"msg":md};
+    
+    xhr.send(postData(data));
+  }catch(err){};
+}
+
+/* jessy inkscape control ============================== begin
+ */
+function jessyzoom(dir) {
+    var ob = document.getElementById(curobjectname);
+    var jessysvg = getsvgwin(curobjectname);
+    jessysvg.myzoomout(dir);
+    ob.focus();
+}
+
+function jessyrotate(dir) {
+    var ob = document.getElementById(curobjectname);
+    var jessysvg = getsvgwin(curobjectname);
+    jessysvg.myrotate(dir);
+    ob.focus();
+}
+
+function jessymove(dir) {
+    var ob = document.getElementById(curobjectname);
+    var jessysvg = getsvgwin(curobjectname);
+    jessysvg.mymove(dir);
+    ob.focus();
+}
+
+function jessyreset(){
+    var ob = document.getElementById(curobjectname);
+    var jessysvg = getsvgwin(curobjectname);
+    jessysvg.slideUpdateExportLayer();
+    ob.focus();
+}
+
+
+function jessylinewid(wid) {
+    var ob = document.getElementById(curobjectname);
+    var jessysvg = getsvgwin(curobjectname);
+    
+    jessysvg.drawingSetPathWidth(wid);
+    ob.focus();
+} 
+
+function jessypencolor(setcolor) {
+    var ob = document.getElementById(curobjectname);
+    var jessysvg = getsvgwin(curobjectname);
+    
+    jessysvg.drawingSetPathColour(setcolor);
+    ob.focus();
+} 
+
+var jessypen = false;
+function jessypened(penorclear) {
+/* change jessy pen model or clear drawing */
+    var ob = document.getElementById(curobjectname);
+    var jessysvg = getsvgwin(curobjectname);
+    if (penorclear==1) {
+        jessypen = !jessypen;
+        if (jessypen) {
+            try{
+                ControlWindow.document.getElementById('jessypen1').innerHTML='<span style="color:red">消画笔</span>';
+            }catch(err){
+                socketemit('from jessy', {'jessid':jessyID,'jessypened':'<span style="color:red">消画笔</span>'});
+            };
+            jessysvg.slideSwitchToDrawingMode();
+        }else {
+            try{
+                ControlWindow.document.getElementById('jessypen1').innerHTML='用画笔';
+            }catch(err){
+                socketemit('from jessy', {'jessid':jessyID,'jessypened':'用画笔'});
+            };
+            jessysvg.drawingSwitchToSlideMode();
+        }
+    }
+    if (penorclear==2) {
+	   jessysvg.drawingUndo();
+    }
+    if (penorclear==3) {
+        var biji = jessysvg.history_presentation_elements.length;
+        if (biji > 0) {
+	       for (var i=0;i<biji;i++){
+	       	    jessysvg.drawingUndo();
+	       }
+        }
+    }
+    ob.focus();
+}
+
+
+function jessytostep(num, sora) {
+/* change jessy slide effact by random */
+    //var num = but.value;
+    var ob = document.getElementById(curobjectname);
+    var jessysvg = getsvgwin(curobjectname);
+	if (sora==1) {
+	   jessysvg.slideSetActiveSlide(num);
+    }else {
+	   if (num > 0) {
+	       var maxeffect = jessysvg.slides[jessysvg.activeSlide]["effects"].length;
+	       if(num > maxeffect){num = maxeffect;}
+	       jessysvg.activeEffect=num-1;
+	       jessysvg.dispatchEffects(1);
+        }
+        if (num == 0) {
+	       jessysvg.activeEffect=1;
+	       jessysvg.dispatchEffects(-1);
+        }
+    }
+    try{
+        ControlWindow.document.getElementById("jessycurslide").value =jessysvg.activeSlide;
+        ControlWindow.document.getElementById("jessycureffat").value =jessysvg.activeEffect;
+    }catch(err){
+        socketemit('from jessy', {'jessid':jessyID,'jessycurslide':jessysvg.activeSlide, 'jessycureffat':jessysvg.activeEffect});
+    };
+    ob.focus();
+}
+
+function jessyslide(dir,sora){
+    /* sora 1=slide 2=effect
+       dir -1 0 1  */
+    var ob = document.getElementById(curobjectname);
+    var jessysvg = getsvgwin(curobjectname);
+    if (jessysvg==false) {
+	   return;
+    }
+    if (sora==1) {
+        var cslid = jessysvg.activeSlide;
+        if (dir==1) {
+            jessysvg.slideSetActiveSlide(cslid+1);
+        }
+        if (dir==-1) {
+	        jessysvg.slideSetActiveSlide(cslid-1);
+        }
+        if (dir==0) {
+            jessysvg.slideSetActiveSlide(0);
+        }
+
+    }else {
+        if (dir != 0) {
+	       jessysvg.dispatchEffects(dir);
+        }else {
+	       jessysvg.activeEffect=1;
+	       jessysvg.dispatchEffects(-1);
+        }
+    }
+    try{
+        ControlWindow.document.getElementById("jessycurslide").value =jessysvg.activeSlide;
+        ControlWindow.document.getElementById("jessycureffat").value =jessysvg.activeEffect;
+    }catch(err){
+        socketemit('from jessy', {'jessid':jessyID,'jessycurslide':jessysvg.activeSlide, 'jessycureffat':jessysvg.activeEffect});
+    };
+    ob.focus();
+}
+
+function getsvgwin(idname) {
+  var svg = document.getElementById(idname);
+  var doc, win;
+  try {
+    doc = svg.getSVGDocument();
+  }
+  catch(exception) {
+    alert('The GetSVGDocument interface is not supported');
+  }
+  if (doc && doc.defaultView)
+    win = doc.defaultView;
+  else if (jessy.window)
+    win = jessy.window;
+  else try {
+    win = jessy.getWindow();
+  }
+  catch(exception) {
+    alert('The DocumentView interface is not supported\r\n' +
+          'Non-W3C methods of obtaining "window" also failed');
+  }
+  if (win) {
+	return win;
+  }else {
+	return false;
+}
+  
+}
+
+/* jessy inkscape control  ==============================  end 
+ */
+
+
+function rekey(e) {
+var keynum
+var keychar
+
+if(window.event) // IE
+  {
+  keynum = e.keyCode
+  }
+else if(e.which) // Netscape/Firefox/Opera
+  {
+  keynum = e.which
+  }
+  keychar = String.fromCharCode(keynum)
+  //if(keychar=="q"){showQrcode(e);}
+ if (keychar=="d") {
+    var ob = document.getElementById("showhide"); 
+    showhidebi(ob,1)
+    }
+   if (keychar=="a") {
+    var ob = document.getElementById("showcover"); 
+    showhidebi(ob,2)
+    }  
+}
+
+
+var curobject = "svg";
+var curobjectname = "impresssvg1";
+var curnumhtm = "1";
+var curnumsvg = "1";
+
+// nodeppt html control +++++++++++++++++++++ begin
+function nodepptslide(dir,jump){
+    //obu -- button | dir -- prev or next 0=begin | jump=1 -- jump to
+    
+    if (curobject == "html") {
+        var obb = document.getElementById(curobjectname);
+        var ob = document.getElementById(curobjectname).contentWindow;
+        var count = ob.Slide.count - 1;
+
+        if (dir == 0 && jump == 0){
+            ob.jumpSlide(0);
+        }
+        if (dir == 0 && jump > 0){
+            var va = jump; //parseInt(step.value);
+            //if (va < 0) {va = 0;}
+            if (va > count) {
+                va = count;
+            }
+            ob.jumpSlide(va);
+            //obb.src= docfilename + curnumhtm + ".html#" + va;
+        }
+        if (dir == -1 && jump == 0){
+            ob.Slide.prev();
+        }
+        if (dir == 1 && jump == 0){
+            ob.Slide.next();
+        }
+        var cIndex = ob.getcurIndex();
+        try{
+            ControlWindow.document.getElementById("curstephtm").value = cIndex;
+        }catch(err){
+            socketemit('from jessy', {'jessid':jessyID,'curstephtm':cIndex});
+        };
+        
+	    //obu.blur();
+	    ob.focus();
+	    return false;
+      }
+}
+
+// nodeppt html control --------------------- end
+
+function tostepp(obu,foo,htmorsvg){
+    if (curobject == "html" && htmorsvg==1) {
+        var ob = document.getElementById(curobjectname);
+        var step = ControlWindow.document.getElementById("curstephtm");
+        var va = parseInt(step.value);
+        if (foo==0) {
+	       va = "0";
+        }else {
+            va = va + foo;
+            if (va<0) {va = "0";}
+	    }
+        if (va=="0") {
+            ob.src= docfilename + curnumhtm + ".html#/overview";
+	    }else {
+	       ob.src= docfilename + curnumhtm + ".html#/step-" + va;
+	    }
+        step.value = va;
+	    obu.blur();
+	    ob.focus();
+      }
+
+    if (curobject == "svg" && htmorsvg==2) {
+        var ob = document.getElementById(curobjectname);
+        var step = ControlWindow.document.getElementById("curstepsvg");
+        var va = parseInt(step.value);
+        if (foo==0) {
+	       va = "1";
+        }else {
+            va = va + foo;
+            if (va<1) {va = "1";}
+	    }
+	    ob.src= docfilename + curnumsvg + ".svg#f" + va;
+        step.value = va;
+	   obu.blur();
+	   ob.focus();
+     }
+}
+
+
+function tostep(step,htmorsvg){
+    if (curobject == "html" && htmorsvg==1) {
+        var ob = document.getElementById(curobjectname);
+        var va = step.value;
+            if (va=="0") {
+                ob.src= docfilename + curnumhtm + ".html#/overview";
+	       }else {
+	           ob.src= docfilename + curnumhtm + ".html#/step-" + va;
+	       }
+	   step.blur();
+	   ob.focus();
+    }
+
+    if (curobject == "svg" && htmorsvg==2) {
+        var ob = document.getElementById(curobjectname);
+        var va = step.value;
+	   if (va=="0") {va = "1";}
+	   ob.src= docfilename + curnumsvg + ".svg#f" + va;
+       step.value = va;
+       	step.blur();
+	   ob.focus();
+    }
+}
+
+function changobject(htmorsvg,num){
+    var hb = document.getElementById("impresshtm"); 
+    var sb = document.getElementById("impresssvg");
+    var dd = document.getElementById("impressdiv");
+        var sb;
+        sb = document.getElementById("impresssvg1");
+        sb.style.display="none";
+        sb = document.getElementById("impresssvg2");
+        sb.style.display="none";
+        sb = document.getElementById("impresssvg3");
+        sb.style.display="none";
+        var hb;
+        hb = document.getElementById("impresshtm1"); 
+        hb.style.display="none";        
+        hb = document.getElementById("impresshtm2"); 
+        hb.style.display="none";
+        hb = document.getElementById("impresshtm3"); 
+        hb.style.display="none";  
+        
+    if (htmorsvg==1) {
+        curobject = "html";
+        curobjectname = "impresshtm" + num;
+        curnumhtm = num;
+        hb = document.getElementById(curobjectname); 
+        hb.style.display=""; 
+	    hb.focus();
+    }
+
+    if (htmorsvg==2) {
+        curobject = "svg";
+        curobjectname = "impresssvg" + num;
+        curnumsvg = num;
+        sb = document.getElementById(curobjectname);
+        sb.style.display="";
+	    sb.focus();
+    }
+}
+
+var capnum1 = 0;
+var capnum2 = 0;
+function capcanve(which){
+    var tcvnum = "capcanvas" + which;
+    var tcv;
+    var ttcv;
+    var scv;
+    if (which == '1'){
+        tcvnum = tcvnum + capnum1;
+        capnum1 +=1;
+        if (capnum1 > 3){ capnum1 = 0; }
+        scv = document.getElementById("myCanvas");
+    }else {
+	   tcvnum = tcvnum + capnum2;
+	   capnum2 +=1;
+	   if (capnum2 > 3){ capnum2 = 0; }
+        scv = document.getElementById("coverCanvas");	   
+    }
+        ttcv = "h" + tcvnum;
+        //tcv = ControlWindow.document.getElementById(tcv);
+        tcv = document.getElementById('tmpcapcanvas');
+        ttcv = document.getElementById(ttcv);
+
+	var w = scv.offsetWidth;
+	var h = scv.offsetHeight;
+	var width = tcv.width;
+	var height = tcv.height;
+    var retCtx = ttcv.getContext('2d');
+    retCtx.clearRect(0, 0, w, h); 
+	retCtx.drawImage(scv, 0, 0, w, h, 0, 0, w, h);
+
+	retCtx = tcv.getContext('2d');
+    retCtx.clearRect(0, 0, width, height); 
+	retCtx.drawImage(scv, 0, 0, w, h, 0, 0, width, height);
+
+	var vimg = new Image();
+	var imgdata = tcv.toDataURL("image/png");
+	vimg.src = imgdata;
+	try{
+	    ttcv = ControlWindow.document.getElementById(tcvnum).getContext("2d");
+	    ttcv.clearRect(0, 0, width, height); 
+	    ttcv.drawImage(tcv, 0, 0);
+	}catch(err){
+	    socketemit('from jessy', {'jessid':jessyID,'capcanve':[tcvnum, imgdata]});
+	}
+}
+
+function huifu(which){
+    var scv = "hcapcanvas" + which;
+    var tcv;
+    if (parseInt(which) < 20){
+        scv = document.getElementById(scv);
+        tcv = document.getElementById("myCanvas");
+    }else {
+        scv = document.getElementById(scv);
+        tcv = document.getElementById("coverCanvas");
+    }
+	//var w = scv.offsetWidth;
+	//var h = scv.offsetHeight;
+	var width = tcv.offsetWidth;
+	var height = tcv.offsetHeight;
+    var retCtx = tcv.getContext('2d');
+    retCtx.clearRect(0, 0, width, height); 
+	retCtx.drawImage(scv, 0, 0, width, height, 0, 0, width, height); 
+}
+
+
+var captt=false;
+var capttimer;
+function autocap(obj){
+   if (captt){
+      captt=false;
+      obj.innerHTML="截  图";
+      clearInterval(capttimer);
+   }else{
+      captt=true;
+      obj.innerHTML="<span style='color:red'>停截图</span>";
+      capttimer = setInterval(captu,500);
+   }
+}
+
+ function captu(){
+    var s_cv = document.getElementById("myCanvas");
+    var t_cv = document.getElementById("capcanvas0");
+
+	var w = s_cv.offsetWidth;
+	var h = s_cv.offsetHeight;
+	var width = t_cv.offsetWidth;
+	var height = t_cv.offsetHeight;
+    var retCtx = t_cv.getContext('2d');
+
+	retCtx.drawImage(s_cv, 0, 0, w, h, 0, 0, width, height);    
+    
+/*  html2canvas(document.getElementById("impressdiv"), {  //impressdiv  canvanlayer
+    onrendered: function(canvas) {
+    var dd = document.getElementById("cdd");
+    var nd = document.getElementById("newcan");
+    dd.removeChild(nd);
+    canvas.setAttribute("id", "newcan");
+    canvas.style.width = "100px";
+    canvas.style.height = "100px";
+    dd.appendChild(canvas);
+    }
+    }); */
+ }
+
+    var localx;  
+    var localy;
+    var mousestate=0;
+    var linewidth = 5;
+    var strokestyle='rgba(255,0,0,0.5)';
+    var show = 0;
+    var show1 = 0;
+    var offsetleft=0; //document.getElementById("canvanlayer").offsetLeft;
+    var offsettop=0;  //document.getElementById("canvanlayer").offsetTop;
+ 
+ 
+    var dragcover = false;
+    //var tet;
+    var ttop;
+    var dv;
+    function covermove() {
+      if (dragcover) {
+        dragcover = false;
+        oinnerHTML ="移动屏";
+      }else {
+	    dragcover = true;
+	    oinnerHTML ="<span style='color:red'>不动屏</span>";
+      }
+        try{
+            ControlWindow.document.getElementById("showcoverup").innerHTML = oinnerHTML;
+        }catch(err){
+            socketemit('from jessy', {'jessid':jessyID,'covermove':oinnerHTML});
+        };
+      
+    }
+    
+    function linewid(se){
+        linewidth = se;
+    }
+
+    function pencolor(se){
+       switch(se){ 
+         case 1:
+            strokestyle='rgba(255,0,0,0.5)';  //红色笔
+            break;
+         case 2:
+            strokestyle='rgba(0,0,255,0.5)';  //蓝色笔
+            break;
+         case 3:
+            strokestyle='rgba(255,0,255,0.5)';  //粉红笔
+            break;
+         case 4:
+            strokestyle='rgba(255,255,0,0.5)';  //黄色笔
+            break;
+         case 5:
+            strokestyle='rgba(0,0,0,0.5)';  //黑色笔
+            break;
+         case 6:
+            strokestyle='rgba(0,255,0,0.5)';  //黑色笔
+            break;
+       }
+    }
+
+    var ctx;
+    var tmpctx = document.getElementById("tmpcanvas").getContext('2d');
+    function mousedown(ev,cv)  
+    {  
+        mousestate =1;
+        var rect = cv.getBoundingClientRect();
+        
+        offsetleft= rect.left;  /*cv.parentNode.parentNode.offsetLeft; // document.getElementById("canvanlayer").offsetLeft;  */
+        offsettop=  rect.top;   /**cv.parentNode.offsetTop + 10;  //document.getElementById("canvanlayer").offsetTop;  */
+        localx = ev.clientX-offsetleft;  
+        localy = ev.clientY-offsettop; 
+        if (dragcover) {
+           dv = document.getElementById("canvancover");
+	       ttop = parseInt(dv.offsetTop);
+	       localy = ev.clientY;
+         }else{
+           ctx=cv.getContext("2d");
+           ctx.lineWidth=linewidth;
+           ctx.strokeStyle=strokestyle;
+           width = cv.offsetWidth;;
+           height = cv.offsetHeight;
+           tmpctx.clearRect(0, 0, width, height); 
+	       tmpctx.drawImage(cv, 0, 0, width, height, 0, 0, width, height); 
+	       tmpctx.lineWidth=linewidth;
+	       tmpctx.strokeStyle=strokestyle;
+	       tmpctx.beginPath();
+	       tmpctx.moveTo(localx,localy);
+         }
+    }  
+  
+    function mouseup(cv)
+    {  
+        mousestate = 0;
+        if (dragcover) {
+        }else{
+        tmpctx.stroke();
+        var tmpcv = document.getElementById("tmpcanvas");
+        width = cv.offsetWidth;;
+        height = cv.offsetHeight;
+        ctx.clearRect(0, 0, width, height); 
+	    ctx.drawImage(tmpcv, 0, 0, width, height, 0, 0, width, height); 
+	    }
+    }  
+  
+    function movedraw(ev,cv)  
+    {  
+        if(mousestate==1 )  
+        {  
+           if (dragcover) {
+              var tmptop = ev.clientY - localy  + ttop;
+              //dv = document.getElementById("canvancover");
+	          //ttop = parseInt(dv.offsetTop);  //style.top;
+	          dv.style.top = tmptop + "px";
+	          //alert(tmptop);
+	
+           } else {
+	
+        
+            var localx2 = ev.clientX-offsetleft;  
+            var localy2 = ev.clientY-offsettop;  
+
+            //var c=document.getElementById("myCanvas");  
+            //var ctx=c.getContext("2d");
+            // ctx=cv.getContext("2d");
+            //ctx.globalAlpha=0.2;
+
+           // ctx.lineWidth=linewidth;
+           // ctx.strokeStyle=strokestyle;
+
+            ctx.beginPath();
+            ctx.moveTo(localx,localy);  
+            ctx.lineTo(localx2,localy2);  
+            ctx.stroke();
+            tmpctx.lineTo(localx2,localy2); 
+/*
+            ctx.fillStyle=strokestyle;
+            var ii = localx;
+            for(ii, ii < localy2, ii+=linewidth){
+                ctx.fillRect(localx2,localy2,linewidth,linewidth);
+            }
+*/          
+            localx = localx2;  
+            localy = localy2;  
+        } 
+    }  }
+    // onmouseout="cnvs_clearCoordinates()
+    function cnvs_clearCoordinates()  
+    {     
+        mousestate = 0;
+        //localx = 0;  
+        //localy = 0;
+        //document.getElementById("xycoordinates").innerHTML="";  
+    }  
+  
+    function clearCanvas(which)  
+    {  
+        var whichcva;
+        switch(which) {
+            case 1:
+            whichcva = "myCanvas";
+            break;
+            case 2:
+            whichcva = "coverCanvas";
+            break;
+        }
+        var c=document.getElementById(whichcva); 
+        var ctx=c.getContext("2d");
+        ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height); 
+        //c.height=c.height;  
+    }  
+
+    function showhidebi(which)
+    {   
+        var whichcv;
+        var whichc;
+        var sh;
+        var inHtml;
+        switch(which) {
+            case 1:
+            whichcv = "<span style='color:red'>消画笔</span>";
+            whichc = "用画笔";
+            sh=show;
+            break;
+            case 2:
+            whichcv = "<span style='color:red'>消白屏</span>";
+            whichc = "用白屏";
+            sh=show1;
+            break;
+        }
+        if(sh==0){ sh=1;showCanvas(which); inHtml=whichcv;  }
+        else{ sh=0; hideCanvas(which); inHtml=whichc; }
+        try{
+            ControlWindow.document.getElementById("showhide"+which).innerHTML = inHtml;
+        }catch(err){
+            socketemit('from jessy', {'jessid':jessyID,'showhide':[which, inHtml]});
+        };
+        
+        switch(which) {
+            case 1:
+            show=sh;
+            break;
+            case 2:
+            show1=sh;
+            break;
+        }        
+    }
+  
+    function hideCanvas(which)
+    {  
+        var whichcva;
+        switch(which) {
+            case 1:
+            whichcva = "canvanlayer";
+            break;
+            case 2:
+            whichcva = "canvancover";
+            break;  }  
+        var c=document.getElementById(whichcva);  
+        c.style.display="none";
+        //clearCanvas();
+	       document.getElementById(curobjectname).focus();
+    } 
+
+    function showCanvas(which)
+    {  
+        var whichcva;
+        switch(which) {
+            case 1:
+            whichcva = "canvanlayer";
+            break;
+            case 2:
+            whichcva = "canvancover";
+            break;  }  
+        var c=document.getElementById(whichcva); 
+        c.style.display="";
+        if (which=2) {
+        c.style.top = "0px";
+        }
+    } 
+
+var docfilename;
+    function setpos(){
+        //createControlWindow();
+        repos();
+        docfilename = GetUrlFileName(window.location.href);
+               
+        var sb;
+        sb = document.getElementById("impresssvg3"); 
+        sb.src=  docfilename + "3.svg";
+        sb = document.getElementById("impresssvg2"); 
+        sb.src=  docfilename + "2.svg";
+        sb = document.getElementById("impresssvg1"); 
+        sb.src=  docfilename + "1.svg";
+        
+        var ob;
+        ob = document.getElementById("impresshtm1"); 
+        ob.src=  docfilename + "1.html#/overview";
+        ob = document.getElementById("impresshtm2"); 
+        ob.src=  docfilename + "2.html#/overview";
+        ob = document.getElementById("impresshtm3"); 
+        ob.src=  docfilename + "3.html#/overview";
+        sb.focus();  
+        document.title=decodeURI(docfilename);
+    }
+
+    var width;
+    var height;
+    function getwah()
+        {
+        if(document.documentElement && document.documentElement.clientWidth)
+            {d_width = document.documentElement.clientWidth;
+             d_height = document.documentElement.clientHeight;
+            }
+        else if(document.body)
+            {d_width = document.body.clientWidth;
+             d_height = document.body.clientHeight;
+            }
+        width=parseInt(d_width);
+        height=parseInt(d_height);
+        }
+
+    function repos(){
+        //return;
+        getwah();
+        var new_width = width;
+        var new_height = height - 40;
+        tmpw = parseInt(new_height * 4 / 3);
+        if (width >= tmpw){new_width = tmpw;}
+        else{ tmph = parseInt(new_width * 3 / 4);
+              new_height = tmph; };
+        
+        var now_left=(width-new_width)/2;
+        var now_top=(height-new_height)/2;
+        if (true){
+           var mywindow = new Array('impressdiv','impresshtm1','impresshtm2',
+                                    'impresshtm3','impresssvg3','impresssvg2','impresssvg1','canvanlayer','canvancover');
+           var mycanwin = new Array('myCanvas','coverCanvas','hcapcanvas10','hcapcanvas11',
+                                    'hcapcanvas12','hcapcanvas13','hcapcanvas20','hcapcanvas21','hcapcanvas22','hcapcanvas23','tmpcanvas');
+           for (var myw in mywindow){
+           //    console.log(mywindow[myw]);
+               document.getElementById(mywindow[myw]).style.width = (new_width + 'px');
+               document.getElementById(mywindow[myw]).style.height =(new_height + 'px');
+            }
+           for (var myw in mycanwin){
+               document.getElementById(mycanwin[myw]).width = new_width;
+               document.getElementById(mycanwin[myw]).height =new_height;
+           }
+        //if (now_left>180) {
+	       //document.getElementById("impress").style.left=(now_left + "px");
+	       document.getElementById("impressdiv").style.left=(now_left + "px");
+           document.getElementById("impressdiv").style.top=(now_top + "px");
+
+           //document.getElementById("canvanlayer").style.left=(now_left + "px");
+           //document.getElementById("canvancover").style.left=(now_left + "px");
+        }}
+
+    function sfocus(){
+           document.getElementById(curobjectname).focus();
+    }
+    document.onclick=sfocus;
+function GetUrlFileName(url) {
+    var fn = url.split('\/');
+    fn = fn[fn.length - 1];
+    fn = fn.replace("index.html","");
+    fn = fn.replace("index.htm","");
+    fn = fn.replace(location.search,"");
+    return fn;
+}
+
+function GetRequest() {
+    var url = location.search; //获取url中"?"符后的字串
+    var theRequest = new Object();
+    if (url.indexOf("?") != -1) {
+        var str = url.substr(1);
+        strs = str.split("&");
+        for(var i = 0; i < strs.length; i ++) {
+            theRequest[strs[i].split("=")[0]]=unescape(strs[i].split("=")[1]);
+        }
+    }
+    return theRequest;
+}
+
+var Request = new Object();
+Request = GetRequest();
+var jessyID;
+if (Request['jessid']) {jessyID = parseInt(Request['jessid']);
+timer_son = window.setTimeout(to_socketon, timeout);}
+else {jessyID = -1;}
+    //window.addEventListener("load", function () {
+    //    document.querySelector("object").focus();
+    //}, false);
+
+/*  Control windows   */
+var ControlWindow;
+var ControlWindowLoaded=false;
+function old_createControlWindow() { // creates a window for Control
+	if (!ControlWindow || ControlWindow.closed) { // Create the window if it doesn't exist
+		ControlWindowLoaded = false;
+		// Note: Safari has a tendency to ignore window options preferring to default to the settings of the parent window, grr.
+		ControlWindow = window.open('control.html', 'ControlWindow', 'top=0,left=1000,width=240,hight=740');
+	}
+	if (ControlWindowLoaded) { // Load the current note if the Note HTML has loaded
+		//loadNote();
+        var ob = document.getElementById(curobjectname);
+        var jessysvg = getsvgwin(curobjectname);
+        var dd = ControlWindow.document.getElementById("jessycurslide");
+        dd.value =jessysvg.activeSlide;
+        var de = ControlWindow.document.getElementById("jessycureffat");
+        de.value =jessysvg.activeEffect;
+	} else { // Keep trying...
+		//window.setTimeout('createControlWindow()', 50);
+	}
+}
+
+function createControlWindow() {
+    ControlWindow = window.open('_blank', 'ControlWindow', 'top=0,left=1000,width=240,hight=740');
+    ControlWindow.document.write("\<html>\<head>\<meta charset=\"utf-8\" />\<title>Educational Control\</title>\<style>body,td,th {font-size: 14px;}\</style> \
+\</head>\<body> \
+\</head>\<body onload=\"opener.ControlWindowLoaded=true;\" onunload=\"opener.ControlWindowLoaded=false;opener.ControlWindow=false\" onkeypress=\"opener.rekey(event)\"> \
+\<div id=\"cc\" style=\"position:absolute;background:#FF99FF; left:20px; top:30px; width: 80px; z-index:2;\"> \
+    \<button onclick=\"changobject(1,'1')\" style=\"cursor:pointer;position:absolute;width:23px;height:25px;left:0px;top:0px;background-color:#CCFFFF;\">H\</button> \
+    \<button onclick=\"changobject(1,'2')\" style=\"cursor:pointer;position:absolute;width:23px;height:25px;left:23px;top:0px;background-color:#CCFFFF;\">T\</button>  \
+    \<button onclick=\"changobject(1,'3')\" style=\"cursor:pointer;position:absolute;width:23px;height:25px;left:46px;top:0px;background-color:#CCFFFF;\">M\</button> \
+   \<div style=\"position:absolute;background:#FF99FF;left:0px;top:26px;\">  \
+    \<button onclick=\"nodepptslide(-1,0)\" style=\"left:0px;width:65px;height:25px;\">&lt;&lt;H&lt;&lt;\</button>  \
+    \<button onclick=\"nodepptslide(0,0)\" style=\"left:0px;width:65px;height:25px;\">0 T 0\</button> \
+    \<button onclick=\"nodepptslide(1,0)\" style=\"left:0px;width:65px;height:25px;\">&gt;&gt;M&gt;&gt;\</button> \
+    \<input id=\"curstephtm\" onkeyup=\"nodepptslide(0,this.value)\" style=\"left:0px;width:60px;height:20px;text-align:center;\" value=\"0\" maxlength=\"2\">\</input> \
+    \<button id=\"showhide1\" onclick=\"showhidebi(1)\" style=\"width:65px;height:25px;\">用画笔\</button>\<br> \
+    \<button id=\"showhideq\" onclick=\"clearCanvas(1)\" style=\"width:65px;height:25px;\">清笔迹\</button>\<br> \
+    \<!-- button id=\"showcover\" onclick=\"autocap(this)\" style=\"width:55px;height:25px;\">截图 1\</button>\<br --> \
+    \<button id=\"showhidej\" onclick=\"capcanve('1')\" style=\"width:65px;height:25px;\">截笔图\</button> \
+    \<button onclick=\"pencolor(1)\" style=\"width:25px;height:25px;background-color:red;\">红\</button>&nbsp; \
+    \<button onclick=\"pencolor(2)\" style=\"width:25px;height:25px;background-color:blue;color:white;\" >蓝\</button>\<br> \
+    \<button onclick=\"pencolor(3)\" style=\"width:25px;height:25px;background-color:magenta;\">品\</button>&nbsp; \
+    \<button onclick=\"pencolor(4)\" style=\"width:25px;height:25px;background-color:#FFFF33;\">黄\</button>\<br> \
+    \<button onclick=\"pencolor(6)\" style=\"width:25px;height:25px;background-color:green;color:white;\">绿\</button>&nbsp; \
+    \<button onclick=\"pencolor(5)\" style=\"width:25px;height:25px;background-color:black;color:white;\">黑\</button>\<br> \
+    \<button onclick=\"linewid(2)\" style=\"width:25px;height:25px;\">２\</button>&nbsp; \
+    \<button onclick=\"linewid(5)\" style=\"width:25px;height:25px;\">５\</button>\<br> \
+    \<button onclick=\"linewid(10)\" style=\"width:25px;height:25px;\">10\</button>&nbsp; \
+    \<button onclick=\"linewid(20)\" style=\"width:25px;height:25px;\">20\</button> \
+    \<button id=\"showhide2\" onclick=\"showhidebi(2)\" style=\"width:65px;height:25px;\">用白屏\</button>\<br> \
+    \<button id=\"showcoverq\" onclick=\"clearCanvas(2)\" style=\"width:65px;height:25px;\">清屏迹\</button>\<br> \
+    \<button id=\"showcoverup\" onclick=\"covermove()\" style=\"width:65px;height:25px;\">移动屏\</button>\<br> \
+    \<button id=\"showcoverj\" onclick=\"capcanve('2')\" style=\"width:65px;height:25px;\">截屏图\</button>\</div>\</div> \
+\<div id=\"jessycc\" style=\"position:absolute;left:110px;background:#33FF33;top:30px; width: 80px; z-index:4;\"> \
+    \<button onclick=\"changobject(2,'1')\" style=\"cursor:pointer;position:absolute;width:23px;height:25px;left:0px;top:0px;\">S\</button> \
+    \<button onclick=\"changobject(2,'2')\" style=\"cursor:pointer;position:absolute;width:23px;height:25px;left:23px;top:0px;\">V\</button>  \
+    \<button onclick=\"changobject(2,'3')\" style=\"cursor:pointer;position:absolute;width:23px;height:25px;left:46px;top:0px;\">G\</button> \
+   \<div style=\"position:absolute;background:#33FF33;left:0px;top:26px;\">  \
+    \<button onclick=\"jessyslide(-1,1)\" style=\"left:0px;width:30px;height:25px;background-color:#CCFF00;\">S&lt;&lt;\</button>  \
+    \<button onclick=\"jessyslide(-1,2)\" style=\"left:32px;width:30px;height:25px;\">E&lt;&lt;\</button>     \
+    \<button onclick=\"jessyslide(0,1)\" style=\"left:0px;width:30px;height:25px;background-color:#CCFF00;\">I0\</button> \
+    \<button onclick=\"jessyslide(0,2)\" style=\"left:32px;width:30px;height:25px;\">F0\</button> \
+    \<button onclick=\"jessyslide(1,1)\" style=\"left:0px;width:30px;height:25px;background-color:#CCFF00;\">D&gt;&gt;\</button> \
+    \<button onclick=\"jessyslide(1,2)\" style=\"left:32px;width:30px;height:25px;\">F&gt;&gt;\</button> \
+    \<input id=\"jessycurslide\" onkeyup=\"jessytostep(this.value,1)\" style=\"left:0px;width:25px;height:20px;text-align:center;background-color:#CCFF00;\" value=\"0\" maxlength=\"2\">\</input> \
+    \<input id=\"jessycureffat\" onkeyup=\"jessytostep(this.value,2)\" style=\"left:25px;width:25px;height:20px;text-align:center;\" value=\"0\" maxlength=\"2\">\</input> \
+    \<button ontouchstart=\"jessyMD(1,-1)\" ontouchend=\"jessyUP()\" onmousedown=\"jessyMD(1,-1)\" onmouseup=\"jessyUP()\" style=\"cursor:pointer;width:23px;height:25px;left:0px;\">大\</button> \
+    \<button onclick=\"jessyzoom(0)\" style=\"cursor:pointer;width:23px;height:25px;left:23px;\">０\</button>  \
+    \<button ontouchstart=\"jessyMD(1,1)\" ontouchend=\"jessyUP()\" onmousedown=\"jessyMD(1,1)\" onmouseup=\"jessyUP()\" style=\"cursor:pointer;width:23px;height:25px;left:46px;\">小\</button>\<br> \
+    \<button ontouchstart=\"jessyMD(2,-1)\" ontouchend=\"jessyUP()\" onmousedown=\"jessyMD(2,-1)\" onmouseup=\"jessyUP()\" style=\"cursor:pointer;width:23px;height:25px;left:0px;\">左\</button> \
+    \<button onclick=\"jessyrotate(0)\" style=\"cursor:pointer;width:23px;height:25px;left:23px;\">－\</button>  \
+    \<button ontouchstart=\"jessyMD(2,1)\" ontouchend=\"jessyUP()\" onmousedown=\"jessyMD(2,1)\" onmouseup=\"jessyUP()\" style=\"cursor:pointer;width:23px;height:25px;left:46px;\">右\</button>\<br> \
+    \<button ontouchstart=\"jessyMD(3,3)\" ontouchend=\"jessyUP()\" onmousedown=\"jessyMD(3,3)\" onmouseup=\"jessyUP()\" style=\"cursor:pointer;width:23px;height:25px;left:0px;\">←\</button> \
+    \<button ontouchstart=\"jessyMD(3,1)\" ontouchend=\"jessyUP()\" onmousedown=\"jessyMD(3,1)\" onmouseup=\"jessyUP()\" style=\"cursor:pointer;width:23px;height:25px;left:23px;\">↑\</button>  \
+    \<button ontouchstart=\"jessyMD(3,4)\" ontouchend=\"jessyUP()\" onmousedown=\"jessyMD(3,4)\" onmouseup=\"jessyUP()\" style=\"cursor:pointer;width:23px;height:25px;left:46px;\">→\</button>\<br> \
+    \<button onclick=\"jessymove(0)\" style=\"cursor:pointer;width:23px;height:25px;left:0px;\">×\</button> \
+    \<button ontouchstart=\"jessyMD(3,2)\" ontouchend=\"jessyUP()\" onmousedown=\"jessyMD(3,2)\" onmouseup=\"jessyUP()\" style=\"cursor:pointer;width:23px;height:25px;left:23px;\">↓\</button> \
+    \<button onclick=\"jessyreset()\" style=\"cursor:pointer;width:23px;height:25px;left:46px;\">E\</button>\<br> \
+    \<button id=\"jessypen1\" onclick=\"jessypened(1)\" style=\"width:65px;height:25px;\">用画笔\</button>\<br> \
+    \<button id=\"jessypen2\" onclick=\"jessypened(2)\" style=\"width:65px;height:25px;\">退　笔\</button>\<br> \
+    \<button id=\"jessypen2\" onclick=\"jessypened(3)\" style=\"width:65px;height:25px;\">清笔迹\</button>\<br> \
+    \<button onclick=\"jessypencolor('rgba(255,0,0,0.6)')\" style=\"width:25px;height:25px;background-color:red;\">红\</button>&nbsp; \
+    \<button onclick=\"jessypencolor('rgba(0,0,255,0.6)')\" style=\"width:25px;height:25px;background-color:blue;color:white;\" >蓝\</button>\<br> \
+    \<button onclick=\"jessypencolor('rgba(255,0,255,0.6)')\" style=\"width:25px;height:25px;background-color:magenta;\">品\</button>&nbsp; \
+    \<button onclick=\"jessypencolor('rgba(255,255,0,0.6)')\" style=\"width:25px;height:25px;background-color:#FFFF33;\">黄\</button>\<br> \
+    \<button onclick=\"jessypencolor('rgba(0,255,0,0.6)')\" style=\"width:25px;height:25px;background-color:green;color:white;\">绿\</button>&nbsp; \
+    \<button onclick=\"jessypencolor('rgba(0,0,0,0.6)')\" style=\"width:25px;height:25px;background-color:black;color:white;\">黑\</button>\<br> \
+    \<button onclick=\"jessylinewid(3)\" style=\"width:25px;height:25px;\">3\</button>&nbsp; \
+    \<button onclick=\"jessylinewid(5)\" style=\"width:25px;height:25px;\">5\</button>\<br> \
+    \<button onclick=\"jessylinewid(9)\" style=\"width:25px;height:25px;\">9\</button>&nbsp; \
+    \<button onclick=\"jessylinewid(20)\" style=\"width:25px;height:25px;\">20\</button> \</div> \</div> \
+\<div id=\"cdd\" style=\"background-color:#CCFFCC;border:1px;position:absolute;left:0px;top:500px;width:100px;height:80px;z-index:4;\"> \
+    \<canvas id=\"capcanvas10\" width=\"50px\" height=\"40px\" onclick=\"huifu('10')\" style=\"position:absolute; left:0px; top:0px;border:1px solid #0066FF; \">\</canvas> \
+    \<canvas id=\"capcanvas11\" width=\"50px\" height=\"40px\" onclick=\"huifu('11')\" style=\"position:absolute; left:50px; top:0px;border:1px solid #0066FF; \">\</canvas> \
+    \<canvas id=\"capcanvas12\" width=\"50px\" height=\"40px\" onclick=\"huifu('12')\" style=\"position:absolute; left:0px; top:40px;border:1px solid #0066FF; \">\</canvas> \
+    \<canvas id=\"capcanvas13\" width=\"50px\" height=\"40px\" onclick=\"huifu('13')\" style=\"position:absolute; left:50px; top:40px;border:1px solid #0066FF; \">\</canvas>\</div> \
+\<div id=\"cddd\" style=\"background-color:#FFFFCC;border:1px;position:absolute;left:105px;top:500px;width:100px;height:80px;z-index:5;\"> \
+    \<canvas id=\"capcanvas20\" width=\"50px\" height=\"40px\" onclick=\"huifu('20')\" style=\"position:absolute; left:0px; top:0px;border:1px solid #0066FF; \">\</canvas> \
+    \<canvas id=\"capcanvas21\" width=\"50px\" height=\"40px\" onclick=\"huifu('21')\" style=\"position:absolute; left:50px; top:0px;border:1px solid #0066FF; \">\</canvas> \
+    \<canvas id=\"capcanvas22\" width=\"50px\" height=\"40px\" onclick=\"huifu('22')\" style=\"position:absolute; left:0px; top:40px;border:1px solid #0066FF; \">\</canvas> \
+    \<canvas id=\"capcanvas23\" width=\"50px\" height=\"40px\" onclick=\"huifu('23')\" style=\"position:absolute; left:50px; top:40px;border:1px solid #0066FF; \">\</canvas>\</div> \
+\<script> \
+function postData(data){ \
+    var str = \"\"; \
+    for(var prop in data){        str += prop + \"=\" + data[prop] + \"&\"    }    return str;} \
+var msgid = 1; \
+var timeout = 500; \
+function socketconnect(){ \
+    var xhr = new XMLHttpRequest(); \
+    xhr.open(\"POST\", \"/msg/connect\", true);  \
+    xhr.setRequestHeader(\"Content-type\",\"application/x-www-form-urlencoded\"); \
+    xhr.onreadystatechange = function(){ \
+        var XMLHttpReq = xhr; \
+        if (XMLHttpReq.readyState == 4) { \
+            if (XMLHttpReq.status == 200) { \
+                var res = JSON.parse(XMLHttpReq.responseText); \
+                console.log(res); \
+                myData = res[\"returnjson\"]; \
+                if (myData > 0) { \
+                    if (myData>msgid){msgid = myData+1;}    }     }    }    }; \
+    data = {\"act\":\"connect\"}; \
+    xhr.send(postData(data));} \
+sc = socketconnect(); \
+timer_sc = setInterval(socketconnect(), 30000); \
+function socketemit(key, msg){ \
+    var xhr = new XMLHttpRequest(); \
+    xhr.open(\"POST\", \"msg/say\", true); \
+    xhr.setRequestHeader(\"Content-type\",\"application/x-www-form-urlencoded\"); \
+    xhr.onreadystatechange = function(){ \
+        var XMLHttpReq = xhr; \
+        if (XMLHttpReq.readyState == 4) { \
+            if (XMLHttpReq.status == 200) { \
+                var res = JSON.parse(XMLHttpReq.responseText); \
+                myData = res[\"returnjson\"]; \
+                if (myData == \"say ok\") { \
+                    console.log(myData);        }      }    }    }; \
+    var md = JSON.stringify(msg); \
+    data = {\"act\":key,\"msg\":md}; \
+    xhr.send(postData(data));} \
+function socketon(filter, id){ \
+    var xhr = new XMLHttpRequest(); \
+    xhr.open(\"POST\", \"/msg/hear\", true); \
+    xhr.setRequestHeader(\"Content-type\",\"application/x-www-form-urlencoded\"); \
+    xhr.onreadystatechange = function(){ \
+        var XMLHttpReq = xhr; \
+        if (XMLHttpReq.readyState == 4) { \
+            if (XMLHttpReq.status == 200) { \
+                var res = JSON.parse(XMLHttpReq.responseText); \
+                console.log(res); \
+                myData = res[\"returnjson\"]; \
+                if (myData == \"hear none\") { \
+                    timeout = 500; \
+                    console.log(myData); \
+                } else { \
+                    timeout = 30; \
+                    msgid++; \
+                    if (myData[\"act\"] == filter && myData[\"jessid\"]==id){ \
+                        socketonmsg(myData);    }      }     }    }    }; \
+    data = {\"msgid\":msgid}; \
+    xhr.send(postData(data));} \
+var timer_son; \
+function to_socketon(){ \
+    window.clearTimeout(timer_son); \
+    msg = socketon(\"from jessy\", jessyID); \
+    timer_son = window.setTimeout(to_socketon, timeout);} \
+function socketonmsg(msg){ \
+    if (msg['jessid'] == jessyID){ \
+      for(var item in msg){   \
+        if (item == 'jessycurslide'){ \
+            document.getElementById('jessycurslide').value = msg['jessycurslide']; \
+        } \
+        if (item == 'jessycureffat'){ \
+            document.getElementById('jessycureffat').value = msg['jessycureffat']; \
+        } \
+        if (item == 'jessypened'){ \
+            document.getElementById('jessypen1').innerHTML = msg['jessypened']; \
+        } \
+        if (item == 'curstephtm'){ \
+            document.getElementById('curstephtm').value = msg['curstephtm']; \
+        } \
+        if (item == 'showhide'){ \
+            document.getElementById('showhide'+msg['showhide'][0]).innerHTML = msg['showhide'][1]; \
+        } \
+        if (item == 'capcanve'){ \
+            var vimg =  new Image(); \
+            var ctx = document.getElementById(msg['capcanve'][0]).getContext('2d'); \
+            ctx.clearRect(0, 0, ctx.width, ctx.height);  \
+            vimg.onload = function(){ ctx.drawImage(vimg,0,0);}; \
+            vimg.src = msg['capcanve'][1]; \
+        } \
+        if (item == 'covermove'){ \
+            document.getElementById('showcoverup').innerHTML = msg['covermove']; \
+        }       }    }} \
+function changobject(htmorsvg,num){ \
+    try{opener.changobject(htmorsvg,num);} \
+    catch(err){socketemit('from control', {'jessid':jessyID,'changobject':[htmorsvg, num]});}} \
+function jessyslide(dir,sora){ \
+    try{opener.jessyslide(dir,sora);} \
+    catch(err){socketemit('from control', {'jessid':jessyID,'jessyslide':[dir,sora]});} \
+} \
+function jessytostep(num, sora){ \
+    try{opener.jessytostep(num, sora);} \
+    catch(err){socketemit('from control', {'jessid':jessyID,'jessytostep':[num,sora]});} \
+} \
+function jessyzoom(dir){ \
+    try{opener.jessyzoom(dir);} \
+    catch(err){socketemit('from control', {'jessid':jessyID,'jessyzoom':dir});} \
+} \
+function jessyrotate(dir){ \
+    try{opener.jessyrotate(dir);} \
+    catch(err){socketemit('from control', {'jessid':jessyID,'jessyrotate':dir});} \
+} \
+function jessyFun(which, dir){ \
+    switch (which){ \
+    case 1: return (function(){return jessyzoom(dir)});break; \
+    case 2: return (function(){return jessyrotate(dir)});break; \
+    case 3: return (function(){return jessymove(dir)});break; \
+    } \
+} \
+var timer1 = new Object(); \
+function jessyMD(which, dir){  \
+    try{window.clearInterval(timer1);timer1 = new Object();}catch(err){}; \
+    timer1 = window.setInterval( jessyFun(which, dir), 50); \
+} \
+function jessyUP(){ \
+    window.clearInterval(timer1); \
+    timer1 = new Object(); \
+} \
+function jessymove(dir){ \
+    try{opener.jessymove(dir);} \
+    catch(err){socketemit('from control', {'jessid':jessyID,'jessymove':dir});} \
+} \
+function jessyreset(){ \
+    jessyMouse = false; \
+    try{opener.jessyreset();} \
+    catch(err){socketemit('from control', {'jessid':jessyID,'jessyreset':'n'});} \
+} \
+function jessypened(penorclear){ \
+    try{opener.jessypened(penorclear);} \
+    catch(err){socketemit('from control', {'jessid':jessyID,'jessypened':penorclear});} \
+} \
+function jessypencolor(setcolor){ \
+    try{opener.jessypencolor(setcolor);} \
+    catch(err){socketemit('from control', {'jessid':jessyID,'jessypencolor':setcolor});} \
+} \
+function jessylinewid(wid){ \
+    try{opener.jessylinewid(wid);} \
+    catch(err){socketemit('from control', {'jessid':jessyID,'jessylinewid':wid});} \
+} \
+function nodepptslide(dir,jump){ \
+    try{opener.nodepptslide(dir,jump);} \
+    catch(err){socketemit('from control', {'jessid':jessyID,'nodepptslide':[dir,jump]});} \
+} \
+function showhidebi(which){ \
+    try{opener.showhidebi(which);} \
+    catch(err){socketemit('from control', {'jessid':jessyID,'showhidebi':which});} \
+} \
+function capcanve(which){ \
+    try{opener.capcanve(which);} \
+    catch(err){socketemit('from control', {'jessid':jessyID,'capcanve':which});} \
+} \
+function clearCanvas(which){ \
+    try{opener.clearCanvas(which);} \
+    catch(err){socketemit('from control', {'jessid':jessyID,'clearCanvas':which});} \
+} \
+function pencolor(se){ \
+    try{opener.pencolor(se);} \
+    catch(err){socketemit('from control', {'jessid':jessyID,'pencolor':se});} \
+} \
+function linewid(se){ \
+    try{opener.linewid(se);} \
+    catch(err){socketemit('from control', {'jessid':jessyID,'linewid':se});} \
+} \
+function covermove(){ \
+    try{opener.covermove();} \
+    catch(err){socketemit('from control', {'jessid':jessyID,'covermove':'n'});} \
+} \
+function huifu(which){ \
+    try{opener.huifu(which);} \
+    catch(err){socketemit('from control', {'jessid':jessyID,'huifu':which});} \
+} \
+function GetRequest() { \
+    var url = location.search;  \
+    var theRequest = new Object(); \
+    if (url.indexOf('?') != -1) { \
+        var str = url.substr(1); \
+        strs = str.split('&'); \
+        for(var i = 0; i \< strs.length; i ++) { \
+            theRequest[strs[i].split('=')[0]]=strs[i].split('=')[1]; \
+        } \
+    } \
+    return theRequest; \
+} \
+var Request = new Object(); \
+Request = GetRequest(); \
+var jessyID; \
+if (Request['jessid']) {jessyID = parseInt(Request['jessid']); \
+timer_son = window.setTimeout(to_socketon, timeout);} \
+else {jessyID = -1;} \
+if (Request['name']) { \
+    document.title=decodeURI(Request['name']) + ' Control'; } \
+else{document.title='Educational Control';} \
+\</\script> \
+\</body>\</html> \
+");
+        var ob = document.getElementById(curobjectname);
+        var jessysvg = getsvgwin(curobjectname);
+        var dd = ControlWindow.document.getElementById("jessycurslide");
+        dd.value =jessysvg.activeSlide;
+        var de = ControlWindow.document.getElementById("jessycureffat");
+        de.value =jessysvg.activeEffect;
+}
+
+</script>
+
+</body>
+</html>
