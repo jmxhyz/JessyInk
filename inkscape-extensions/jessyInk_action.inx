@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension">
+  <_name>Action</_name>
+  <id>jessyink.action</id>
+  <dependency type="executable" location="extensions">inkex.py</dependency>
+  <dependency type="executable" location="extensions">jessyInk_action.py</dependency>
+  <param name="tab" type="notebook">
+    <page name="action" _gui-text="Action">
+        <param name="actiontype" type="optiongroup" _gui-text="Type:">
+           <_option value="none">None</_option>
+           <_option value="drag">Drag</_option>
+           <_option value="jump">jump</_option>
+        </param>
+        <param name="jumpslide" type="int" min="0" max="10000" _gui-text="Slide:">0</param>
+        <param name="jumpeffect" type="int" min="0" max="10000" _gui-text="Effect:">0</param>
+    </page>
+    <page name="help" _gui-text="Help">
+      <_param name="help_text" type="description">This extension allows you to install, update and remove object action for a JessyInk presentation. </_param>
+    </page>
+  </param>
+  <effect>
+    <object-type>all</object-type>
+      <effects-menu>
+        <submenu _name="JessyInk"/>
+      </effects-menu>
+  </effect>
+  <script>
+    <command reldir="extensions" interpreter="python">jessyInk_action.py</command>
+  </script>
+</inkscape-extension>
+
