@@ -118,7 +118,7 @@ function postData(data){ // 转成post需要的字符串.
 }
 
 var msgid = 1;
-var timeout = 500;
+var timeout = 10;
 function socketconnect(){
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "/msg/connect", true); //同步方式,异步把false改为true  
@@ -140,7 +140,7 @@ function socketconnect(){
     xhr.send(postData(data));
 }
 sc = socketconnect();
-timer_sc = setInterval(socketconnect(), 30000);
+timer_sc = setInterval(socketconnect(), 60000);
 
 function socketemit(key, msg){
   //var cd = {'jessid':2,'jessyslide':[22,44]};
@@ -173,6 +173,8 @@ function socketon(filter, id){
      
     xhr.open("POST", "/msg/hear", true);
     xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+    xhr.timeout = 30000;  
+    xhr.ontimeout = function(){timer_son = window.setTimeout(to_socketon, timeout);}; 
     xhr.onreadystatechange = function(){
         var XMLHttpReq = xhr;
         if (XMLHttpReq.readyState == 4) {
@@ -182,10 +184,10 @@ function socketon(filter, id){
                 myData = res["returnjson"];
                 if (myData == "hear none") {
                     //alert("没有消息！");
-                    timeout = 500;
+                    //timeout = 30;
                     console.log(myData);
                 } else {
-                    timeout = 30;
+                    //timeout = 30;
                     msgid++;
                     if (myData["act"] == filter && myData["jessid"]==id){
                         //alert(myData);
@@ -193,6 +195,7 @@ function socketon(filter, id){
                         socketonmsg(myData);
                     }
                 }
+                timer_son = window.setTimeout(to_socketon, timeout);
             }
         }
     };
@@ -204,9 +207,9 @@ var timer_son;
 function to_socketon(){
     window.clearTimeout(timer_son);
     msg = socketon("from jessy", jessyID);
-    timer_son = window.setTimeout(to_socketon, timeout);
+    //timer_son = window.setTimeout(to_socketon, timeout);
 }
-
+timer_son = setInterval(to_socketon(), 60000);
 //============================================================
 function socketonmsg(msg){
 //socket.on('from jessy', function(msg){
