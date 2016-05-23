@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8" />
@@ -59,6 +59,19 @@
 
 <script src="/qrcode.js"></script>
 <script type="text/javascript">
+var msgid = 1;
+var timeout = 10;
+var timer_son;
+var jessypen = false;
+var curobject = "svg";
+var curobjectname = "impresssvg1";
+var curnumhtm = "1";
+var curnumsvg = "1";
+var capnum1 = 0;
+var capnum2 = 0;
+var captt=false;
+var capttimer;
+
 try{
     var ctrlurl;
     filename = GetUrlFileName(window.location.href);
@@ -97,8 +110,6 @@ function postData(data){ // 转成post需要的字符串.
     return str;
 }
 
-var msgid = 1;
-var timeout = 500;
 function socketconnect(){
   try{
     var xhr = new XMLHttpRequest();
@@ -121,9 +132,6 @@ function socketconnect(){
     xhr.send(postData(data));
   }catch(err){}
 }
-sc = socketconnect();
-timer_sc = setInterval(socketconnect(), 30000);
-
 
 function socketon(filter, id){
   //return {'jessid':2,'jessyslide':[22,44]};
@@ -131,6 +139,8 @@ function socketon(filter, id){
      
     xhr.open("POST", "/msg/hear", true);
     xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+    xhr.timeout = 30000;  
+    xhr.ontimeout = function(){timer_son = window.setTimeout(to_socketon, timeout);}; 
     xhr.onreadystatechange = function(){
         var XMLHttpReq = xhr;
         if (XMLHttpReq.readyState == 4) {
@@ -140,10 +150,10 @@ function socketon(filter, id){
                 myData = res["returnjson"];
                 if (myData == "hear none") {
                     //alert("没有消息！");
-                    timeout = 500;
+                    //timeout = 10;
                     console.log(myData);
                 } else {
-                    timeout = 30;
+                    //timeout = 30;
                     msgid++;
                     if (myData["act"] == filter && myData["jessid"]==id){
                         //alert(myData);
@@ -151,6 +161,7 @@ function socketon(filter, id){
                         socketonmsg(myData);
                     }
                 }
+                timer_son = window.setTimeout(to_socketon, timeout);
             }
         }
     };
@@ -158,11 +169,10 @@ function socketon(filter, id){
     xhr.send(postData(data));
 }
 
-var timer_son;
 function to_socketon(){
     window.clearTimeout(timer_son);
     msg = socketon("from control", jessyID);
-    timer_son = window.setTimeout(to_socketon, timeout);
+    //timer_son = window.setTimeout(to_socketon, timeout);
 }
 
 function socketonmsg(msg){
@@ -247,10 +257,12 @@ function jessymove(dir) {
 }
 
 function jessyreset(){
+  try{
     var ob = document.getElementById(curobjectname);
     var jessysvg = getsvgwin(curobjectname);
     jessysvg.slideUpdateExportLayer();
     ob.focus();
+  }catch(err){}
 }
 
 
@@ -270,7 +282,6 @@ function jessypencolor(setcolor) {
     ob.focus();
 } 
 
-var jessypen = false;
 function jessypened(penorclear) {
 /* change jessy pen model or clear drawing */
     var ob = document.getElementById(curobjectname);
@@ -306,7 +317,6 @@ function jessypened(penorclear) {
     }
     ob.focus();
 }
-
 
 function jessytostep(num, sora) {
 /* change jessy slide effact by random */
@@ -429,12 +439,6 @@ else if(e.which) // Netscape/Firefox/Opera
     }  
 }
 
-
-var curobject = "svg";
-var curobjectname = "impresssvg1";
-var curnumhtm = "1";
-var curnumsvg = "1";
-
 // nodeppt html control +++++++++++++++++++++ begin
 function nodepptslide(dir,jump){
     //obu -- button | dir -- prev or next 0=begin | jump=1 -- jump to
@@ -515,7 +519,6 @@ function tostepp(obu,foo,htmorsvg){
      }
 }
 
-
 function tostep(step,htmorsvg){
     if (curobject == "html" && htmorsvg==1) {
         var ob = document.getElementById(curobjectname);
@@ -578,8 +581,6 @@ function changobject(htmorsvg,num){
     }
 }
 
-var capnum1 = 0;
-var capnum2 = 0;
 function capcanve(which){
     var tcvnum = "capcanvas" + which;
     var tcv;
@@ -644,9 +645,6 @@ function huifu(which){
 	retCtx.drawImage(scv, 0, 0, width, height, 0, 0, width, height); 
 }
 
-
-var captt=false;
-var capttimer;
 function autocap(obj){
    if (captt){
       captt=false;
@@ -1024,15 +1022,6 @@ function GetRequest() {
     return theRequest;
 }
 
-var Request = new Object();
-Request = GetRequest();
-var jessyID;
-if (Request['jessid']) {jessyID = parseInt(Request['jessid']);
-timer_son = window.setTimeout(to_socketon, timeout);}
-else {jessyID = -1;}
-    //window.addEventListener("load", function () {
-    //    document.querySelector("object").focus();
-    //}, false);
 
 /*  Control windows   */
 var ControlWindow;
@@ -1058,94 +1047,106 @@ function old_createControlWindow() { // creates a window for Control
 
 function createControlWindow() {
     ControlWindow = window.open('_blank', 'ControlWindow', 'top=0,left=1000,width=240,hight=740');
-    ControlWindow.document.write("\<html>\<head>\<meta charset=\"utf-8\" />\<title>Educational Control\</title>\<style>body,td,th {font-size: 14px;}\</style> \
-\</head>\<body> \
-\</head>\<body onload=\"opener.ControlWindowLoaded=true;\" onunload=\"opener.ControlWindowLoaded=false;opener.ControlWindow=false\" onkeypress=\"opener.rekey(event)\"> \
+    ControlWindow.document.write("\<html>\<head>\<meta charset=\"utf-8\" \/> \
+\<title>Educational Control\<\/title>\<style>body,td,th {font-size: 14px;}\<\/style> \
+\<\/head>\<body> \
+\<\/head>\<body onload=\"opener.ControlWindowLoaded=true;\" onunload=\"opener.ControlWindowLoaded=false;\" onkeypress=\"opener.rekey(event)\"> \
+\<!--以下 HTML --> \
 \<div id=\"cc\" style=\"position:absolute;background:#FF99FF; left:20px; top:30px; width: 80px; z-index:2;\"> \
-    \<button onclick=\"changobject(1,'1')\" style=\"cursor:pointer;position:absolute;width:23px;height:25px;left:0px;top:0px;background-color:#CCFFFF;\">H\</button> \
-    \<button onclick=\"changobject(1,'2')\" style=\"cursor:pointer;position:absolute;width:23px;height:25px;left:23px;top:0px;background-color:#CCFFFF;\">T\</button>  \
-    \<button onclick=\"changobject(1,'3')\" style=\"cursor:pointer;position:absolute;width:23px;height:25px;left:46px;top:0px;background-color:#CCFFFF;\">M\</button> \
+    \<button onclick=\"changobject(1,\'1\')\" style=\"cursor:pointer;position:absolute;width:23px;height:25px;left:0px;top:0px;background-color:#CCFFFF;\">H\<\/button> \
+    \<button onclick=\"changobject(1,\'2\')\" style=\"cursor:pointer;position:absolute;width:23px;height:25px;left:23px;top:0px;background-color:#CCFFFF;\">T\<\/button>  \
+    \<button onclick=\"changobject(1,\'3\')\" style=\"cursor:pointer;position:absolute;width:23px;height:25px;left:46px;top:0px;background-color:#CCFFFF;\">M\<\/button> \
    \<div style=\"position:absolute;background:#FF99FF;left:0px;top:26px;\">  \
-    \<button onclick=\"nodepptslide(-1,0)\" style=\"left:0px;width:65px;height:25px;\">&lt;&lt;H&lt;&lt;\</button>  \
-    \<button onclick=\"nodepptslide(0,0)\" style=\"left:0px;width:65px;height:25px;\">0 T 0\</button> \
-    \<button onclick=\"nodepptslide(1,0)\" style=\"left:0px;width:65px;height:25px;\">&gt;&gt;M&gt;&gt;\</button> \
-    \<input id=\"curstephtm\" onkeyup=\"nodepptslide(0,this.value)\" style=\"left:0px;width:60px;height:20px;text-align:center;\" value=\"0\" maxlength=\"2\">\</input> \
-    \<button id=\"showhide1\" onclick=\"showhidebi(1)\" style=\"width:65px;height:25px;\">用画笔\</button>\<br> \
-    \<button id=\"showhideq\" onclick=\"clearCanvas(1)\" style=\"width:65px;height:25px;\">清笔迹\</button>\<br> \
-    \<!-- button id=\"showcover\" onclick=\"autocap(this)\" style=\"width:55px;height:25px;\">截图 1\</button>\<br --> \
-    \<button id=\"showhidej\" onclick=\"capcanve('1')\" style=\"width:65px;height:25px;\">截笔图\</button> \
-    \<button onclick=\"pencolor(1)\" style=\"width:25px;height:25px;background-color:red;\">红\</button>&nbsp; \
-    \<button onclick=\"pencolor(2)\" style=\"width:25px;height:25px;background-color:blue;color:white;\" >蓝\</button>\<br> \
-    \<button onclick=\"pencolor(3)\" style=\"width:25px;height:25px;background-color:magenta;\">品\</button>&nbsp; \
-    \<button onclick=\"pencolor(4)\" style=\"width:25px;height:25px;background-color:#FFFF33;\">黄\</button>\<br> \
-    \<button onclick=\"pencolor(6)\" style=\"width:25px;height:25px;background-color:green;color:white;\">绿\</button>&nbsp; \
-    \<button onclick=\"pencolor(5)\" style=\"width:25px;height:25px;background-color:black;color:white;\">黑\</button>\<br> \
-    \<button onclick=\"linewid(2)\" style=\"width:25px;height:25px;\">２\</button>&nbsp; \
-    \<button onclick=\"linewid(5)\" style=\"width:25px;height:25px;\">５\</button>\<br> \
-    \<button onclick=\"linewid(10)\" style=\"width:25px;height:25px;\">10\</button>&nbsp; \
-    \<button onclick=\"linewid(20)\" style=\"width:25px;height:25px;\">20\</button> \
-    \<button id=\"showhide2\" onclick=\"showhidebi(2)\" style=\"width:65px;height:25px;\">用白屏\</button>\<br> \
-    \<button id=\"showcoverq\" onclick=\"clearCanvas(2)\" style=\"width:65px;height:25px;\">清屏迹\</button>\<br> \
-    \<button id=\"showcoverup\" onclick=\"covermove()\" style=\"width:65px;height:25px;\">移动屏\</button>\<br> \
-    \<button id=\"showcoverj\" onclick=\"capcanve('2')\" style=\"width:65px;height:25px;\">截屏图\</button>\</div>\</div> \
+    \<button onclick=\"nodepptslide(-1,0)\" style=\"left:0px;width:65px;height:25px;\">&lt;&lt;H&lt;&lt;\<\/button>  \
+    \<button onclick=\"nodepptslide(0,0)\" style=\"left:0px;width:65px;height:25px;\">0 T 0\<\/button> \
+    \<button onclick=\"nodepptslide(1,0)\" style=\"left:0px;width:65px;height:25px;\">&gt;&gt;M&gt;&gt;\<\/button> \
+    \<input id=\"curstephtm\" onkeyup=\"nodepptslide(0,this.value)\" style=\"left:0px;width:60px;height:20px;text-align:center;\" value=\"0\" maxlength=\"2\">\<\/input> \
+    \<button id=\"showhide1\" onclick=\"showhidebi(1)\" style=\"width:65px;height:25px;\">用画笔\<\/button>\<br> \
+    \<button id=\"showhideq\" onclick=\"clearCanvas(1)\" style=\"width:65px;height:25px;\">清笔迹\<\/button>\<br> \
+    \<!-- button id=\"showcover\" onclick=\"autocap(this)\" style=\"width:55px;height:25px;\">截图 1\<\/button>\<br --> \
+    \<button id=\"showhidej\" onclick=\"capcanve(\'1\')\" style=\"width:65px;height:25px;\">截笔图\<\/button> \
+    \<button onclick=\"pencolor(1)\" style=\"width:25px;height:25px;background-color:red;\">红\<\/button>&nbsp; \
+    \<button onclick=\"pencolor(2)\" style=\"width:25px;height:25px;background-color:blue;color:white;\" >蓝\<\/button>\<br> \
+    \<button onclick=\"pencolor(3)\" style=\"width:25px;height:25px;background-color:magenta;\">品\<\/button>&nbsp; \
+    \<button onclick=\"pencolor(4)\" style=\"width:25px;height:25px;background-color:#FFFF33;\">黄\<\/button>\<br> \
+    \<button onclick=\"pencolor(6)\" style=\"width:25px;height:25px;background-color:green;color:white;\">绿\<\/button>&nbsp; \
+    \<button onclick=\"pencolor(5)\" style=\"width:25px;height:25px;background-color:black;color:white;\">黑\<\/button>\<br> \
+    \<button onclick=\"linewid(2)\" style=\"width:25px;height:25px;\">２\<\/button>&nbsp; \
+    \<button onclick=\"linewid(5)\" style=\"width:25px;height:25px;\">５\<\/button>\<br> \
+    \<button onclick=\"linewid(10)\" style=\"width:25px;height:25px;\">10\<\/button>&nbsp; \
+    \<button onclick=\"linewid(20)\" style=\"width:25px;height:25px;\">20\<\/button> \
+    \<button id=\"showhide2\" onclick=\"showhidebi(2)\" style=\"width:65px;height:25px;\">用白屏\<\/button>\<br> \
+    \<button id=\"showcoverq\" onclick=\"clearCanvas(2)\" style=\"width:65px;height:25px;\">清屏迹\<\/button>\<br> \
+    \<button id=\"showcoverup\" onclick=\"covermove()\" style=\"width:65px;height:25px;\">移动屏\<\/button>\<br> \
+    \<button id=\"showcoverj\" onclick=\"capcanve(\'2\')\" style=\"width:65px;height:25px;\">截屏图\<\/button> \
+   \<\/div>     \
+\<\/div> \
+\<!--以下jessy ink SVG --> \
 \<div id=\"jessycc\" style=\"position:absolute;left:110px;background:#33FF33;top:30px; width: 80px; z-index:4;\"> \
-    \<button onclick=\"changobject(2,'1')\" style=\"cursor:pointer;position:absolute;width:23px;height:25px;left:0px;top:0px;\">S\</button> \
-    \<button onclick=\"changobject(2,'2')\" style=\"cursor:pointer;position:absolute;width:23px;height:25px;left:23px;top:0px;\">V\</button>  \
-    \<button onclick=\"changobject(2,'3')\" style=\"cursor:pointer;position:absolute;width:23px;height:25px;left:46px;top:0px;\">G\</button> \
+    \<button onclick=\"changobject(2,\'1\')\" style=\"cursor:pointer;position:absolute;width:23px;height:25px;left:0px;top:0px;\">S\<\/button> \
+    \<button onclick=\"changobject(2,\'2\')\" style=\"cursor:pointer;position:absolute;width:23px;height:25px;left:23px;top:0px;\">V\<\/button>  \
+    \<button onclick=\"changobject(2,\'3\')\" style=\"cursor:pointer;position:absolute;width:23px;height:25px;left:46px;top:0px;\">G\<\/button> \
    \<div style=\"position:absolute;background:#33FF33;left:0px;top:26px;\">  \
-    \<button onclick=\"jessyslide(-1,1)\" style=\"left:0px;width:30px;height:25px;background-color:#CCFF00;\">S&lt;&lt;\</button>  \
-    \<button onclick=\"jessyslide(-1,2)\" style=\"left:32px;width:30px;height:25px;\">E&lt;&lt;\</button>     \
-    \<button onclick=\"jessyslide(0,1)\" style=\"left:0px;width:30px;height:25px;background-color:#CCFF00;\">I0\</button> \
-    \<button onclick=\"jessyslide(0,2)\" style=\"left:32px;width:30px;height:25px;\">F0\</button> \
-    \<button onclick=\"jessyslide(1,1)\" style=\"left:0px;width:30px;height:25px;background-color:#CCFF00;\">D&gt;&gt;\</button> \
-    \<button onclick=\"jessyslide(1,2)\" style=\"left:32px;width:30px;height:25px;\">F&gt;&gt;\</button> \
-    \<input id=\"jessycurslide\" onkeyup=\"jessytostep(this.value,1)\" style=\"left:0px;width:25px;height:20px;text-align:center;background-color:#CCFF00;\" value=\"0\" maxlength=\"2\">\</input> \
-    \<input id=\"jessycureffat\" onkeyup=\"jessytostep(this.value,2)\" style=\"left:25px;width:25px;height:20px;text-align:center;\" value=\"0\" maxlength=\"2\">\</input> \
-    \<button ontouchstart=\"jessyMD(1,-1)\" ontouchend=\"jessyUP()\" onmousedown=\"jessyMD(1,-1)\" onmouseup=\"jessyUP()\" style=\"cursor:pointer;width:23px;height:25px;left:0px;\">大\</button> \
-    \<button onclick=\"jessyzoom(0)\" style=\"cursor:pointer;width:23px;height:25px;left:23px;\">０\</button>  \
-    \<button ontouchstart=\"jessyMD(1,1)\" ontouchend=\"jessyUP()\" onmousedown=\"jessyMD(1,1)\" onmouseup=\"jessyUP()\" style=\"cursor:pointer;width:23px;height:25px;left:46px;\">小\</button>\<br> \
-    \<button ontouchstart=\"jessyMD(2,-1)\" ontouchend=\"jessyUP()\" onmousedown=\"jessyMD(2,-1)\" onmouseup=\"jessyUP()\" style=\"cursor:pointer;width:23px;height:25px;left:0px;\">左\</button> \
-    \<button onclick=\"jessyrotate(0)\" style=\"cursor:pointer;width:23px;height:25px;left:23px;\">－\</button>  \
-    \<button ontouchstart=\"jessyMD(2,1)\" ontouchend=\"jessyUP()\" onmousedown=\"jessyMD(2,1)\" onmouseup=\"jessyUP()\" style=\"cursor:pointer;width:23px;height:25px;left:46px;\">右\</button>\<br> \
-    \<button ontouchstart=\"jessyMD(3,3)\" ontouchend=\"jessyUP()\" onmousedown=\"jessyMD(3,3)\" onmouseup=\"jessyUP()\" style=\"cursor:pointer;width:23px;height:25px;left:0px;\">←\</button> \
-    \<button ontouchstart=\"jessyMD(3,1)\" ontouchend=\"jessyUP()\" onmousedown=\"jessyMD(3,1)\" onmouseup=\"jessyUP()\" style=\"cursor:pointer;width:23px;height:25px;left:23px;\">↑\</button>  \
-    \<button ontouchstart=\"jessyMD(3,4)\" ontouchend=\"jessyUP()\" onmousedown=\"jessyMD(3,4)\" onmouseup=\"jessyUP()\" style=\"cursor:pointer;width:23px;height:25px;left:46px;\">→\</button>\<br> \
-    \<button onclick=\"jessymove(0)\" style=\"cursor:pointer;width:23px;height:25px;left:0px;\">×\</button> \
-    \<button ontouchstart=\"jessyMD(3,2)\" ontouchend=\"jessyUP()\" onmousedown=\"jessyMD(3,2)\" onmouseup=\"jessyUP()\" style=\"cursor:pointer;width:23px;height:25px;left:23px;\">↓\</button> \
-    \<button onclick=\"jessyreset()\" style=\"cursor:pointer;width:23px;height:25px;left:46px;\">E\</button>\<br> \
-    \<button id=\"jessypen1\" onclick=\"jessypened(1)\" style=\"width:65px;height:25px;\">用画笔\</button>\<br> \
-    \<button id=\"jessypen2\" onclick=\"jessypened(2)\" style=\"width:65px;height:25px;\">退　笔\</button>\<br> \
-    \<button id=\"jessypen2\" onclick=\"jessypened(3)\" style=\"width:65px;height:25px;\">清笔迹\</button>\<br> \
-    \<button onclick=\"jessypencolor('rgba(255,0,0,0.6)')\" style=\"width:25px;height:25px;background-color:red;\">红\</button>&nbsp; \
-    \<button onclick=\"jessypencolor('rgba(0,0,255,0.6)')\" style=\"width:25px;height:25px;background-color:blue;color:white;\" >蓝\</button>\<br> \
-    \<button onclick=\"jessypencolor('rgba(255,0,255,0.6)')\" style=\"width:25px;height:25px;background-color:magenta;\">品\</button>&nbsp; \
-    \<button onclick=\"jessypencolor('rgba(255,255,0,0.6)')\" style=\"width:25px;height:25px;background-color:#FFFF33;\">黄\</button>\<br> \
-    \<button onclick=\"jessypencolor('rgba(0,255,0,0.6)')\" style=\"width:25px;height:25px;background-color:green;color:white;\">绿\</button>&nbsp; \
-    \<button onclick=\"jessypencolor('rgba(0,0,0,0.6)')\" style=\"width:25px;height:25px;background-color:black;color:white;\">黑\</button>\<br> \
-    \<button onclick=\"jessylinewid(3)\" style=\"width:25px;height:25px;\">3\</button>&nbsp; \
-    \<button onclick=\"jessylinewid(5)\" style=\"width:25px;height:25px;\">5\</button>\<br> \
-    \<button onclick=\"jessylinewid(9)\" style=\"width:25px;height:25px;\">9\</button>&nbsp; \
-    \<button onclick=\"jessylinewid(20)\" style=\"width:25px;height:25px;\">20\</button> \</div> \</div> \
+    \<button onclick=\"jessyslide(-1,1)\" style=\"left:0px;width:30px;height:25px;background-color:#CCFF00;\">S&lt;&lt;\<\/button>  \
+    \<button onclick=\"jessyslide(-1,2)\" style=\"left:32px;width:30px;height:25px;\">E&lt;&lt;\<\/button>     \
+    \<button onclick=\"jessyslide(0,1)\" style=\"left:0px;width:30px;height:25px;background-color:#CCFF00;\">I0\<\/button> \
+    \<button onclick=\"jessyslide(0,2)\" style=\"left:32px;width:30px;height:25px;\">F0\<\/button> \
+    \<button onclick=\"jessyslide(1,1)\" style=\"left:0px;width:30px;height:25px;background-color:#CCFF00;\">D&gt;&gt;\<\/button> \
+    \<button onclick=\"jessyslide(1,2)\" style=\"left:32px;width:30px;height:25px;\">F&gt;&gt;\<\/button> \
+    \<input id=\"jessycurslide\" onkeyup=\"jessytostep(this.value,1)\" style=\"left:0px;width:25px;height:20px;text-align:center;background-color:#CCFF00;\" value=\"0\" maxlength=\"2\">\<\/input> \
+    \<input id=\"jessycureffat\" onkeyup=\"jessytostep(this.value,2)\" style=\"left:25px;width:25px;height:20px;text-align:center;\" value=\"0\" maxlength=\"2\">\<\/input> \
+    \<button ontouchstart=\"jessyMD(1,-1)\" ontouchend=\"jessyUP()\" onmousedown=\"jessyMD(1,-1)\" onmouseup=\"jessyUP()\" style=\"cursor:pointer;width:23px;height:25px;left:0px;\">大\<\/button> \
+    \<button onclick=\"jessyzoom(0)\" style=\"cursor:pointer;width:23px;height:25px;left:23px;\">０\<\/button>  \
+    \<button ontouchstart=\"jessyMD(1,1)\" ontouchend=\"jessyUP()\" onmousedown=\"jessyMD(1,1)\" onmouseup=\"jessyUP()\" style=\"cursor:pointer;width:23px;height:25px;left:46px;\">小\<\/button>\<br> \
+    \<button ontouchstart=\"jessyMD(2,-1)\" ontouchend=\"jessyUP()\" onmousedown=\"jessyMD(2,-1)\" onmouseup=\"jessyUP()\" style=\"cursor:pointer;width:23px;height:25px;left:0px;\">左\<\/button> \
+    \<button onclick=\"jessyrotate(0)\" style=\"cursor:pointer;width:23px;height:25px;left:23px;\">－\<\/button>  \
+    \<button ontouchstart=\"jessyMD(2,1)\" ontouchend=\"jessyUP()\" onmousedown=\"jessyMD(2,1)\" onmouseup=\"jessyUP()\" style=\"cursor:pointer;width:23px;height:25px;left:46px;\">右\<\/button>\<br> \
+    \<button ontouchstart=\"jessyMD(3,3)\" ontouchend=\"jessyUP()\" onmousedown=\"jessyMD(3,3)\" onmouseup=\"jessyUP()\" style=\"cursor:pointer;width:23px;height:25px;left:0px;\">←\<\/button> \
+    \<button ontouchstart=\"jessyMD(3,1)\" ontouchend=\"jessyUP()\" onmousedown=\"jessyMD(3,1)\" onmouseup=\"jessyUP()\" style=\"cursor:pointer;width:23px;height:25px;left:23px;\">↑\<\/button>  \
+    \<button ontouchstart=\"jessyMD(3,4)\" ontouchend=\"jessyUP()\" onmousedown=\"jessyMD(3,4)\" onmouseup=\"jessyUP()\" style=\"cursor:pointer;width:23px;height:25px;left:46px;\">→\<\/button>\<br> \
+    \<button onclick=\"jessymove(0)\" style=\"cursor:pointer;width:23px;height:25px;left:0px;\">×\<\/button> \
+    \<button ontouchstart=\"jessyMD(3,2)\" ontouchend=\"jessyUP()\" onmousedown=\"jessyMD(3,2)\" onmouseup=\"jessyUP()\" style=\"cursor:pointer;width:23px;height:25px;left:23px;\">↓\<\/button> \
+    \<button onclick=\"jessyreset()\" style=\"cursor:pointer;width:23px;height:25px;left:46px;\">E\<\/button>\<br> \
+    \<button id=\"jessypen1\" onclick=\"jessypened(1)\" style=\"width:65px;height:25px;\">用画笔\<\/button>\<br> \
+    \<button id=\"jessypen2\" onclick=\"jessypened(2)\" style=\"width:65px;height:25px;\">退　笔\<\/button>\<br> \
+    \<button id=\"jessypen2\" onclick=\"jessypened(3)\" style=\"width:65px;height:25px;\">清笔迹\<\/button>\<br> \
+    \<button onclick=\"jessypencolor(\'rgba(255,0,0,0.6)\')\" style=\"width:25px;height:25px;background-color:red;\">红\<\/button>&nbsp; \
+    \<button onclick=\"jessypencolor(\'rgba(0,0,255,0.6)\')\" style=\"width:25px;height:25px;background-color:blue;color:white;\" >蓝\<\/button>\<br> \
+    \<button onclick=\"jessypencolor(\'rgba(255,0,255,0.6)\')\" style=\"width:25px;height:25px;background-color:magenta;\">品\<\/button>&nbsp; \
+    \<button onclick=\"jessypencolor(\'rgba(255,255,0,0.6)\')\" style=\"width:25px;height:25px;background-color:#FFFF33;\">黄\<\/button>\<br> \
+    \<button onclick=\"jessypencolor(\'rgba(0,255,0,0.6)\')\" style=\"width:25px;height:25px;background-color:green;color:white;\">绿\<\/button>&nbsp; \
+    \<button onclick=\"jessypencolor(\'rgba(0,0,0,0.6)\')\" style=\"width:25px;height:25px;background-color:black;color:white;\">黑\<\/button>\<br> \
+    \<button onclick=\"jessylinewid(3)\" style=\"width:25px;height:25px;\">3\<\/button>&nbsp; \
+    \<button onclick=\"jessylinewid(5)\" style=\"width:25px;height:25px;\">5\<\/button>\<br> \
+    \<button onclick=\"jessylinewid(9)\" style=\"width:25px;height:25px;\">9\<\/button>&nbsp; \
+    \<button onclick=\"jessylinewid(20)\" style=\"width:25px;height:25px;\">20\<\/button> \
+   \<\/div>     \
+\<\/div> \
+\<!--以下canvas截图--> \
 \<div id=\"cdd\" style=\"background-color:#CCFFCC;border:1px;position:absolute;left:0px;top:500px;width:100px;height:80px;z-index:4;\"> \
-    \<canvas id=\"capcanvas10\" width=\"50px\" height=\"40px\" onclick=\"huifu('10')\" style=\"position:absolute; left:0px; top:0px;border:1px solid #0066FF; \">\</canvas> \
-    \<canvas id=\"capcanvas11\" width=\"50px\" height=\"40px\" onclick=\"huifu('11')\" style=\"position:absolute; left:50px; top:0px;border:1px solid #0066FF; \">\</canvas> \
-    \<canvas id=\"capcanvas12\" width=\"50px\" height=\"40px\" onclick=\"huifu('12')\" style=\"position:absolute; left:0px; top:40px;border:1px solid #0066FF; \">\</canvas> \
-    \<canvas id=\"capcanvas13\" width=\"50px\" height=\"40px\" onclick=\"huifu('13')\" style=\"position:absolute; left:50px; top:40px;border:1px solid #0066FF; \">\</canvas>\</div> \
+    \<canvas id=\"capcanvas10\" width=\"50px\" height=\"40px\" onclick=\"huifu(\'10\')\" style=\"position:absolute; left:0px; top:0px;border:1px solid #0066FF; \">\<\/canvas> \
+    \<canvas id=\"capcanvas11\" width=\"50px\" height=\"40px\" onclick=\"huifu(\'11\')\" style=\"position:absolute; left:50px; top:0px;border:1px solid #0066FF; \">\<\/canvas> \
+    \<canvas id=\"capcanvas12\" width=\"50px\" height=\"40px\" onclick=\"huifu(\'12\')\" style=\"position:absolute; left:0px; top:40px;border:1px solid #0066FF; \">\<\/canvas> \
+    \<canvas id=\"capcanvas13\" width=\"50px\" height=\"40px\" onclick=\"huifu(\'13\')\" style=\"position:absolute; left:50px; top:40px;border:1px solid #0066FF; \">\<\/canvas> \
+\<\/div> \
 \<div id=\"cddd\" style=\"background-color:#FFFFCC;border:1px;position:absolute;left:105px;top:500px;width:100px;height:80px;z-index:5;\"> \
-    \<canvas id=\"capcanvas20\" width=\"50px\" height=\"40px\" onclick=\"huifu('20')\" style=\"position:absolute; left:0px; top:0px;border:1px solid #0066FF; \">\</canvas> \
-    \<canvas id=\"capcanvas21\" width=\"50px\" height=\"40px\" onclick=\"huifu('21')\" style=\"position:absolute; left:50px; top:0px;border:1px solid #0066FF; \">\</canvas> \
-    \<canvas id=\"capcanvas22\" width=\"50px\" height=\"40px\" onclick=\"huifu('22')\" style=\"position:absolute; left:0px; top:40px;border:1px solid #0066FF; \">\</canvas> \
-    \<canvas id=\"capcanvas23\" width=\"50px\" height=\"40px\" onclick=\"huifu('23')\" style=\"position:absolute; left:50px; top:40px;border:1px solid #0066FF; \">\</canvas>\</div> \
+    \<canvas id=\"capcanvas20\" width=\"50px\" height=\"40px\" onclick=\"huifu(\'20\')\" style=\"position:absolute; left:0px; top:0px;border:1px solid #0066FF; \">\<\/canvas> \
+    \<canvas id=\"capcanvas21\" width=\"50px\" height=\"40px\" onclick=\"huifu(\'21\')\" style=\"position:absolute; left:50px; top:0px;border:1px solid #0066FF; \">\<\/canvas> \
+    \<canvas id=\"capcanvas22\" width=\"50px\" height=\"40px\" onclick=\"huifu(\'22\')\" style=\"position:absolute; left:0px; top:40px;border:1px solid #0066FF; \">\<\/canvas> \
+    \<canvas id=\"capcanvas23\" width=\"50px\" height=\"40px\" onclick=\"huifu(\'23\')\" style=\"position:absolute; left:50px; top:40px;border:1px solid #0066FF; \">\<\/canvas> \
+\<\/div> \
 \<script> \
 function postData(data){ \
     var str = \"\"; \
-    for(var prop in data){        str += prop + \"=\" + data[prop] + \"&\"    }    return str;} \
+    for(var prop in data){ \
+        str += prop + \"=\" + data[prop] + \"&\" \
+    }    return str;} \
 var msgid = 1; \
-var timeout = 500; \
+var timeout = 10; \
 function socketconnect(){ \
     var xhr = new XMLHttpRequest(); \
-    xhr.open(\"POST\", \"/msg/connect\", true);  \
-    xhr.setRequestHeader(\"Content-type\",\"application/x-www-form-urlencoded\"); \
+    xhr.open(\"POST\", \"\/msg\/connect\", true);   \
+    xhr.setRequestHeader(\"Content-type\",\"application\/x-www-form-urlencoded\"); \
     xhr.onreadystatechange = function(){ \
         var XMLHttpReq = xhr; \
         if (XMLHttpReq.readyState == 4) { \
@@ -1154,15 +1155,17 @@ function socketconnect(){ \
                 console.log(res); \
                 myData = res[\"returnjson\"]; \
                 if (myData > 0) { \
-                    if (myData>msgid){msgid = myData+1;}    }     }    }    }; \
+                    if (myData>msgid){msgid = myData+1;} \
+                }            }        }    }; \
     data = {\"act\":\"connect\"}; \
-    xhr.send(postData(data));} \
+    xhr.send(postData(data)); \
+} \
 sc = socketconnect(); \
-timer_sc = setInterval(socketconnect(), 30000); \
+timer_sc = setInterval(socketconnect(), 60000); \
 function socketemit(key, msg){ \
     var xhr = new XMLHttpRequest(); \
-    xhr.open(\"POST\", \"msg/say\", true); \
-    xhr.setRequestHeader(\"Content-type\",\"application/x-www-form-urlencoded\"); \
+    xhr.open(\"POST\", \"msg\/say\", true); \
+    xhr.setRequestHeader(\"Content-type\",\"application\/x-www-form-urlencoded\"); \
     xhr.onreadystatechange = function(){ \
         var XMLHttpReq = xhr; \
         if (XMLHttpReq.readyState == 4) { \
@@ -1170,14 +1173,18 @@ function socketemit(key, msg){ \
                 var res = JSON.parse(XMLHttpReq.responseText); \
                 myData = res[\"returnjson\"]; \
                 if (myData == \"say ok\") { \
-                    console.log(myData);        }      }    }    }; \
+                    console.log(myData); \
+                }            }        }    }; \
     var md = JSON.stringify(msg); \
     data = {\"act\":key,\"msg\":md}; \
-    xhr.send(postData(data));} \
+    xhr.send(postData(data)); \
+} \
 function socketon(filter, id){ \
     var xhr = new XMLHttpRequest(); \
-    xhr.open(\"POST\", \"/msg/hear\", true); \
-    xhr.setRequestHeader(\"Content-type\",\"application/x-www-form-urlencoded\"); \
+    xhr.open(\"POST\", \"\/msg\/hear\", true); \
+    xhr.setRequestHeader(\"Content-type\",\"application\/x-www-form-urlencoded\"); \
+    xhr.timeout = 30000;   \
+    xhr.ontimeout = function(){timer_son = window.setTimeout(to_socketon, timeout);};  \
     xhr.onreadystatechange = function(){ \
         var XMLHttpReq = xhr; \
         if (XMLHttpReq.readyState == 4) { \
@@ -1186,66 +1193,69 @@ function socketon(filter, id){ \
                 console.log(res); \
                 myData = res[\"returnjson\"]; \
                 if (myData == \"hear none\") { \
-                    timeout = 500; \
                     console.log(myData); \
                 } else { \
-                    timeout = 30; \
                     msgid++; \
                     if (myData[\"act\"] == filter && myData[\"jessid\"]==id){ \
-                        socketonmsg(myData);    }      }     }    }    }; \
+                        socketonmsg(myData); \
+                    } \
+                }                timer_son = window.setTimeout(to_socketon, timeout); \
+            }        }    }; \
     data = {\"msgid\":msgid}; \
-    xhr.send(postData(data));} \
+    xhr.send(postData(data)); \
+} \
 var timer_son; \
 function to_socketon(){ \
     window.clearTimeout(timer_son); \
     msg = socketon(\"from jessy\", jessyID); \
-    timer_son = window.setTimeout(to_socketon, timeout);} \
+} \
+timer_son = setInterval(to_socketon(), 60000); \
 function socketonmsg(msg){ \
-    if (msg['jessid'] == jessyID){ \
+    if (msg[\'jessid\'] == jessyID){ \
       for(var item in msg){   \
-        if (item == 'jessycurslide'){ \
-            document.getElementById('jessycurslide').value = msg['jessycurslide']; \
+        if (item == \'jessycurslide\'){ \
+            document.getElementById(\'jessycurslide\').value = msg[\'jessycurslide\']; \
         } \
-        if (item == 'jessycureffat'){ \
-            document.getElementById('jessycureffat').value = msg['jessycureffat']; \
+        if (item == \'jessycureffat\'){ \
+            document.getElementById(\'jessycureffat\').value = msg[\'jessycureffat\']; \
         } \
-        if (item == 'jessypened'){ \
-            document.getElementById('jessypen1').innerHTML = msg['jessypened']; \
+        if (item == \'jessypened\'){ \
+            document.getElementById(\'jessypen1\').innerHTML = msg[\'jessypened\']; \
         } \
-        if (item == 'curstephtm'){ \
-            document.getElementById('curstephtm').value = msg['curstephtm']; \
+        if (item == \'curstephtm\'){ \
+            document.getElementById(\'curstephtm\').value = msg[\'curstephtm\']; \
         } \
-        if (item == 'showhide'){ \
-            document.getElementById('showhide'+msg['showhide'][0]).innerHTML = msg['showhide'][1]; \
+        if (item == \'showhide\'){ \
+            document.getElementById(\'showhide\'+msg[\'showhide\'][0]).innerHTML = msg[\'showhide\'][1]; \
         } \
-        if (item == 'capcanve'){ \
+        if (item == \'capcanve\'){ \
             var vimg =  new Image(); \
-            var ctx = document.getElementById(msg['capcanve'][0]).getContext('2d'); \
+            var ctx = document.getElementById(msg[\'capcanve\'][0]).getContext(\'2d\'); \
             ctx.clearRect(0, 0, ctx.width, ctx.height);  \
             vimg.onload = function(){ ctx.drawImage(vimg,0,0);}; \
-            vimg.src = msg['capcanve'][1]; \
-        } \
-        if (item == 'covermove'){ \
-            document.getElementById('showcoverup').innerHTML = msg['covermove']; \
-        }       }    }} \
+            vimg.src = msg[\'capcanve\'][1];        } \
+        if (item == \'covermove\'){ \
+            document.getElementById(\'showcoverup\').innerHTML = msg[\'covermove\']; \
+        }      }    }} \
 function changobject(htmorsvg,num){ \
     try{opener.changobject(htmorsvg,num);} \
-    catch(err){socketemit('from control', {'jessid':jessyID,'changobject':[htmorsvg, num]});}} \
+    catch(err){socketemit(\'from control\', {\'jessid\':jessyID,\'changobject\':[htmorsvg, num]});} \
+} \
 function jessyslide(dir,sora){ \
     try{opener.jessyslide(dir,sora);} \
-    catch(err){socketemit('from control', {'jessid':jessyID,'jessyslide':[dir,sora]});} \
+    catch(err){socketemit(\'from control\', {\'jessid\':jessyID,\'jessyslide\':[dir,sora]});} \
 } \
 function jessytostep(num, sora){ \
     try{opener.jessytostep(num, sora);} \
-    catch(err){socketemit('from control', {'jessid':jessyID,'jessytostep':[num,sora]});} \
+    catch(err){socketemit(\'from control\', {\'jessid\':jessyID,\'jessytostep\':[num,sora]});} \
 } \
 function jessyzoom(dir){ \
     try{opener.jessyzoom(dir);} \
-    catch(err){socketemit('from control', {'jessid':jessyID,'jessyzoom':dir});} \
+    catch(err){socketemit(\'from control\', {\'jessid\':jessyID,\'jessyzoom\':dir});} \
 } \
 function jessyrotate(dir){ \
     try{opener.jessyrotate(dir);} \
-    catch(err){socketemit('from control', {'jessid':jessyID,'jessyrotate':dir});} \
+    catch(err){socketemit(\'from control\', {\'jessid\':jessyID,\'jessyrotate\':dir});} \
 } \
 function jessyFun(which, dir){ \
     switch (which){ \
@@ -1265,80 +1275,76 @@ function jessyUP(){ \
 } \
 function jessymove(dir){ \
     try{opener.jessymove(dir);} \
-    catch(err){socketemit('from control', {'jessid':jessyID,'jessymove':dir});} \
+    catch(err){socketemit(\'from control\', {\'jessid\':jessyID,\'jessymove\':dir});} \
 } \
 function jessyreset(){ \
     jessyMouse = false; \
     try{opener.jessyreset();} \
-    catch(err){socketemit('from control', {'jessid':jessyID,'jessyreset':'n'});} \
+    catch(err){socketemit(\'from control\', {\'jessid\':jessyID,\'jessyreset\':\'n\'});} \
 } \
 function jessypened(penorclear){ \
     try{opener.jessypened(penorclear);} \
-    catch(err){socketemit('from control', {'jessid':jessyID,'jessypened':penorclear});} \
+    catch(err){socketemit(\'from control\', {\'jessid\':jessyID,\'jessypened\':penorclear});} \
 } \
 function jessypencolor(setcolor){ \
     try{opener.jessypencolor(setcolor);} \
-    catch(err){socketemit('from control', {'jessid':jessyID,'jessypencolor':setcolor});} \
+    catch(err){socketemit(\'from control\', {\'jessid\':jessyID,\'jessypencolor\':setcolor});} \
 } \
 function jessylinewid(wid){ \
     try{opener.jessylinewid(wid);} \
-    catch(err){socketemit('from control', {'jessid':jessyID,'jessylinewid':wid});} \
+    catch(err){socketemit(\'from control\', {\'jessid\':jessyID,\'jessylinewid\':wid});} \
 } \
 function nodepptslide(dir,jump){ \
     try{opener.nodepptslide(dir,jump);} \
-    catch(err){socketemit('from control', {'jessid':jessyID,'nodepptslide':[dir,jump]});} \
+    catch(err){socketemit(\'from control\', {\'jessid\':jessyID,\'nodepptslide\':[dir,jump]});} \
 } \
 function showhidebi(which){ \
     try{opener.showhidebi(which);} \
-    catch(err){socketemit('from control', {'jessid':jessyID,'showhidebi':which});} \
+    catch(err){socketemit(\'from control\', {\'jessid\':jessyID,\'showhidebi\':which});} \
 } \
 function capcanve(which){ \
     try{opener.capcanve(which);} \
-    catch(err){socketemit('from control', {'jessid':jessyID,'capcanve':which});} \
+    catch(err){socketemit(\'from control\', {\'jessid\':jessyID,\'capcanve\':which});} \
 } \
 function clearCanvas(which){ \
     try{opener.clearCanvas(which);} \
-    catch(err){socketemit('from control', {'jessid':jessyID,'clearCanvas':which});} \
+    catch(err){socketemit(\'from control\', {\'jessid\':jessyID,\'clearCanvas\':which});} \
 } \
 function pencolor(se){ \
     try{opener.pencolor(se);} \
-    catch(err){socketemit('from control', {'jessid':jessyID,'pencolor':se});} \
+    catch(err){socketemit(\'from control\', {\'jessid\':jessyID,\'pencolor\':se});} \
 } \
 function linewid(se){ \
     try{opener.linewid(se);} \
-    catch(err){socketemit('from control', {'jessid':jessyID,'linewid':se});} \
+    catch(err){socketemit(\'from control\', {\'jessid\':jessyID,\'linewid\':se});} \
 } \
 function covermove(){ \
     try{opener.covermove();} \
-    catch(err){socketemit('from control', {'jessid':jessyID,'covermove':'n'});} \
+    catch(err){socketemit(\'from control\', {\'jessid\':jessyID,\'covermove\':\'n\'});} \
 } \
 function huifu(which){ \
     try{opener.huifu(which);} \
-    catch(err){socketemit('from control', {'jessid':jessyID,'huifu':which});} \
+    catch(err){socketemit(\'from control\', {\'jessid\':jessyID,\'huifu\':which});} \
 } \
 function GetRequest() { \
     var url = location.search;  \
     var theRequest = new Object(); \
-    if (url.indexOf('?') != -1) { \
+    if (url.indexOf(\'?\') != -1) { \
         var str = url.substr(1); \
-        strs = str.split('&'); \
+        strs = str.split(\'&\'); \
         for(var i = 0; i \< strs.length; i ++) { \
-            theRequest[strs[i].split('=')[0]]=strs[i].split('=')[1]; \
-        } \
-    } \
-    return theRequest; \
-} \
+            theRequest[strs[i].split(\'=\')[0]]=strs[i].split(\'=\')[1]; \
+        }    }    return theRequest;} \
 var Request = new Object(); \
 Request = GetRequest(); \
 var jessyID; \
-if (Request['jessid']) {jessyID = parseInt(Request['jessid']); \
+if (Request[\'jessid\']) {jessyID = parseInt(Request[\'jessid\']); \
 timer_son = window.setTimeout(to_socketon, timeout);} \
 else {jessyID = -1;} \
-if (Request['name']) { \
-    document.title=decodeURI(Request['name']) + ' Control'; } \
-else{document.title='Educational Control';} \
-\</\script> \
-\</body>\</html> \
+if (Request[\'name\']) { \
+    document.title=decodeURI(Request[\'name\']) + \' Control\'; } \
+else{document.title=\'Educational Control\';} \
+\<\/script>\<\/body>\<\/html> \
 ");
         var ob = document.getElementById(curobjectname);
         var jessysvg = getsvgwin(curobjectname);
@@ -1347,6 +1353,20 @@ else{document.title='Educational Control';} \
         var de = ControlWindow.document.getElementById("jessycureffat");
         de.value =jessysvg.activeEffect;
 }
+
+
+var Request = new Object();
+Request = GetRequest();
+var jessyID;
+if (Request['jessid']) {jessyID = parseInt(Request['jessid']);
+sc = socketconnect();
+timer_sc = setInterval(socketconnect(), 60000);
+timer_sonc = setInterval(to_socketon(), 60000);
+timer_son = window.setTimeout(to_socketon, timeout);}
+else {jessyID = -1;}
+    //window.addEventListener("load", function () {
+    //    document.querySelector("object").focus();
+    //}, false);
 
 </script>
 
