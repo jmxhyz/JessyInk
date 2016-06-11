@@ -57,8 +57,9 @@ var MOUSE_UP = 1;
 var MOUSE_DOWN = 2;
 var MOUSE_MOVE = 3;
 var MOUSE_WHEEL = 4;
-var MOUSE_LEFT = 0;  //leejungjun
-var MOUSE_TOP = 0;   //leejungjun
+var MOUSE_LEFT = 0;  //leejj
+var MOUSE_TOP = 0;   //leejj
+var MOVE_CAN = 1;   //leejj
 
 // Parameters.
 var ROOT_NODE = document.getElementsByTagNameNS(NSS['svg'], 'svg')[0];
@@ -626,6 +627,7 @@ var mySVG = document.getElementsByTagName('svg')[0];
 
 function mydrag(evt) {
       //svg = document.querySelector('svg');
+      MOVE_CAN = 0; //can not drag move
       my_rotate = 0;
       if (evt.ctrlKey){ my_rotate = 1 * Math.PI / 180; }
       if (evt.shiftKey){ my_rotate = -1 * Math.PI / 180; }
@@ -651,23 +653,22 @@ function mydrag(evt) {
         // currentMatrix = new Array(1,0,0,1,0,0);
         if(currentMatrix.indexOf('translate') >= 0){
            currentMatrixCTM = currentMatrix.slice(10,-1).split(',');
-           my_matrix.e = parseFloat(currentMatrixCTM[0])
+           my_matrix.e = parseFloat(currentMatrixCTM[0]);
            my_matrix.f = parseFloat(currentMatrixCTM[1]);
-        }else{
-          currentMatrix = currentMatrix.slice(7,-1).split(',');
-              for(var i=0; i < currentMatrix.length; i++) {
-                currentMatrix[i] = parseFloat(currentMatrix[i]);
-                if (currentMatrix[i]){
-                }else{
-                    currentMatrix[i] = 0;
-                }
-              }
-              my_matrix.a = currentMatrix[0];
-              my_matrix.b = currentMatrix[1];
-              my_matrix.c = currentMatrix[2];
-              my_matrix.d = currentMatrix[3];
-              my_matrix.e = currentMatrix[4];
-              my_matrix.f = currentMatrix[5];
+        }
+        if(currentMatrix.indexOf('scale') >= 0){
+           currentMatrixCTM = currentMatrix.slice(6,-1).split(',');
+           my_matrix.a = parseFloat(currentMatrixCTM[0]);
+           my_matrix.d = parseFloat(currentMatrixCTM[1]);
+        }
+        if(currentMatrix.indexOf('matrix') >= 0){
+           currentMatrixCTM = currentMatrix.slice(7,-1).split(',');
+              my_matrix.a = parseFloat(currentMatrixCTM[0]);
+              my_matrix.b = parseFloat(currentMatrixCTM[1]);
+              my_matrix.c = parseFloat(currentMatrixCTM[2]);
+              my_matrix.d = parseFloat(currentMatrixCTM[3]);
+              my_matrix.e = parseFloat(currentMatrixCTM[4]);
+              my_matrix.f = parseFloat(currentMatrixCTM[5]);
             }
       }else{
         currentMatrix = new Array(1,0,0,1,0,0);
@@ -734,6 +735,7 @@ function moveElement(evt) {
 }
 
 function deselectElement(evt) {
+      MOVE_CAN = 1;  //can drag move
       if(selectedElement != 0){
           selectedElement.removeAttributeNS(null, 'onmousemove');
           selectedElement.removeAttributeNS(null, 'onmouseout');
@@ -819,7 +821,7 @@ function skipEffects(dir)
 	}
 }
 
-/** Event handler for zoom.  leejungjun
+/** Event handler for zoom.  leejj
  *
  *  @param dir -1: zoomout  1: zoomin.
  */
@@ -881,7 +883,7 @@ function myzoomout(dir)
 	return false;
 }
 
-/** Function to ratate slide.  LeeJungjun
+/** Function to ratate slide.  Leejj
  *
  *  @param {dir} direction (1 = anticlockwise -1 = clockwise)
  */
@@ -926,7 +928,7 @@ function myrotate(dir){
 	return false;
 }
 
-/** function for movements.  leejungjun
+/** function for movements.  leejj
  *
  *  @param dir move direction '0 1 2 3 4' -> 'reset up down left right '.
  */
@@ -1249,7 +1251,7 @@ function keydown(e)
 		e = window.event;
 
 	//code = e.keyCode || e.charCode;
-	code = e.keyCode;  //leejungjun
+	code = e.keyCode;  //leejj
 
 	if (!processingEffect && keyCodeDictionary[currentMode] && keyCodeDictionary[currentMode][code])
 		return keyCodeDictionary[currentMode][code]();
@@ -1271,7 +1273,7 @@ function keypress(e)
 		e = window.event;
 
 	//str = String.fromCharCode(e.keyCode || e.charCode);
-	str = String.fromCharCode(e.charCode);  //leejungjun
+	str = String.fromCharCode(e.charCode);  //leejj
 
 	if (!processingEffect && charCodeDictionary[currentMode] && charCodeDictionary[currentMode][str])
 		return charCodeDictionary[currentMode][str]();
@@ -1296,17 +1298,17 @@ function getDefaultCharCodeDictionary()
 	charCodeDict[SLIDE_MODE]['p'] = function () { return slideToggleProgressBarVisibility(); };
 	charCodeDict[SLIDE_MODE]['t'] = function () { return slideResetTimer(); };
 	charCodeDict[SLIDE_MODE]['e'] = function () { return slideUpdateExportLayer(); };
-	charCodeDict[SLIDE_MODE]['='] = function () { return myzoomout(-1); };  //leejungjun
-	charCodeDict[SLIDE_MODE]['-'] = function () { return myzoomout(1); };   //leejungjun
-	charCodeDict[SLIDE_MODE]['0'] = function () { return myzoomout(0); };   //leejungjun
-	charCodeDict[SLIDE_MODE]['r'] = function () { return myrotate(1); };   //leejungjun
-	charCodeDict[SLIDE_MODE]['R'] = function () { return myrotate(-1); };   //leejungjun
-	charCodeDict[SLIDE_MODE]['q'] = function () { return myrotate(0); };   //leejungjun
-	charCodeDict[SLIDE_MODE]['a'] = function () { return mymove(0); };   //leejungjun
-	charCodeDict[SLIDE_MODE]['s'] = function () { return mymove(1); };   //leejungjun
-	charCodeDict[SLIDE_MODE]['x'] = function () { return mymove(2); };   //leejungjun
-	charCodeDict[SLIDE_MODE]['z'] = function () { return mymove(3); };   //leejungjun
-	charCodeDict[SLIDE_MODE]['c'] = function () { return mymove(4); };   //leejungjun
+	charCodeDict[SLIDE_MODE]['='] = function () { return myzoomout(-1); };  //leejj
+	charCodeDict[SLIDE_MODE]['-'] = function () { return myzoomout(1); };   //leejj
+	charCodeDict[SLIDE_MODE]['0'] = function () { return myzoomout(0); };   //leejj
+	charCodeDict[SLIDE_MODE]['r'] = function () { return myrotate(1); };   //leejj
+	charCodeDict[SLIDE_MODE]['R'] = function () { return myrotate(-1); };   //leejj
+	charCodeDict[SLIDE_MODE]['q'] = function () { return myrotate(0); };   //leejj
+	charCodeDict[SLIDE_MODE]['a'] = function () { return mymove(0); };   //leejj
+	charCodeDict[SLIDE_MODE]['s'] = function () { return mymove(1); };   //leejj
+	charCodeDict[SLIDE_MODE]['x'] = function () { return mymove(2); };   //leejj
+	charCodeDict[SLIDE_MODE]['z'] = function () { return mymove(3); };   //leejj
+	charCodeDict[SLIDE_MODE]['c'] = function () { return mymove(4); };   //leejj
 
 	charCodeDict[DRAWING_MODE]['d'] = function () { return drawingSwitchToSlideMode(); };
 	charCodeDict[DRAWING_MODE]['0'] = function () { return drawingResetPathWidth(); };
@@ -1379,7 +1381,7 @@ function getDefaultKeyCodeDictionary()
  */
 function mouseHandlerDispatch(evnt, action)
 {
-    if (selectedElement != 0 && action != 2 ){return true;}  //leejungjun mydrag
+    if (selectedElement != 0 && action != 2 ){return true;}  //leejj mydrag
 	if (!evnt)
 		evnt = window.event;
 
@@ -1419,8 +1421,8 @@ function mouseHandlerDispatch(evnt, action)
 document.onmousedown = function(e) { return mouseHandlerDispatch(e, MOUSE_DOWN); };
 document.onmouseup = function(e) { return mouseHandlerDispatch(e, MOUSE_UP); };
 document.onmousemove = function(e) { return mouseHandlerDispatch(e, MOUSE_MOVE); };
-document.onclick = function(e) { e.preventDefault(); return false; }; //leejungjun
-document.oncontextmenu = function(){return false;}  //leejungjun
+document.onclick = function(e) { e.preventDefault(); return false; }; //leejj
+document.oncontextmenu = function(){return false;}  //leejj
 
 // Moz
 if (window.addEventListener)
@@ -1455,7 +1457,7 @@ function getDefaultMouseHandlerDictionary()
 	return mouseHandlerDict;
 }
 
-/** Function to switch from slide mode to drawing mode. cursor=crosshair  //leejungjun
+/** Function to switch from slide mode to drawing mode. cursor=crosshair  //leejj
 */
 function slideSwitchToDrawingMode()
 {
@@ -1619,7 +1621,7 @@ function padString(str, len)
  */
 function slideUpdateExportLayer()
 {
-    //reset  leejungjun
+    //reset  leejj
     myzoom = rotateangle = moving = MOUSE_TOP = MOUSE_LEFT = 0;
 	// Suspend redraw since we are going to mess with the slides.
 	var suspendHandle = ROOT_NODE.suspendRedraw(2000);
