@@ -266,9 +266,9 @@ function jessyInk_core_mouseHandler_zoomControl(obj)
 	 */
 	obj.mousedown = function (e)
 	{
-		var p = obj.projectCoords(obj.getCoords(e)); //jmxhyz
-		MOUSE_LEFT = p.x;  //jmxhyz
-		MOUSE_TOP = p.y;   //jmxhyz
+		var p = obj.projectCoords(obj.getCoords(e)); //leejj
+		MOUSE_LEFT = p.x;  //leejj
+		MOUSE_TOP = p.y;   //leejj
 
 		if (obj.dragging_active)
 			return false;
@@ -276,15 +276,16 @@ function jessyInk_core_mouseHandler_zoomControl(obj)
 		var value = 0;
 
 		try{
-			value = e.button;  //Firefox jmxhyz
+			value = e.button;  //Firefox leejj
 		}catch(err){
 			value = e.which;
 		}
 		if (value == 0)  //left button
 		{
+			if (MOVE_CAN == 1){
 			obj.dragging_last = obj.getCoords(e);
 			obj.dragging_active = true;
-			obj.click = true;
+			obj.click = true;}
 		}
 		if (value == 20)  //1 =middle button
 		{
@@ -315,7 +316,7 @@ function jessyInk_core_mouseHandler_zoomControl(obj)
 
 		var value = 0;
 		try{
-			value = e.button;  //Firefox jmxhyz
+			value = e.button;  //Firefox leejj
 		}catch(err){
 			value = e.which;
 		}
