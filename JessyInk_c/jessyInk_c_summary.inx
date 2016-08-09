@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension">
+  <_name>概要</_name>
+  <id>jessyink_c.summary</id>
+  <dependency type="executable" location="extensions">inkex.py</dependency>
+  <dependency type="executable" location="extensions">jessyInk_c_summary.py</dependency>
+  <param name="tab" type="notebook">
+    <page name="help" _gui-text="Help">
+			<_param name="help_text" type="description">这个扩展将列出当前SVG文件包含的 JessyInk_c 脚本、特效和切换效果等的概要。</_param>
+    </page>
+	</param>
+  <effect>
+    <object-type>all</object-type>
+      <effects-menu>
+        <submenu _name="JessyInk_c"/>
+      </effects-menu>
+  </effect>
+  <script>
+    <command reldir="extensions" interpreter="python">jessyInk_c_summary.py</command>
+  </script>
+</inkscape-extension>
+

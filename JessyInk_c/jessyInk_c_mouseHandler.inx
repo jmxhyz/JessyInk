@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension">
+  <_name>鼠标设置</_name>
+  <id>jessyink_c.mouseHandler</id>
+  <dependency type="executable" location="extensions">inkex.py</dependency>
+  <dependency type="executable" location="extensions">jessyInk_c_mouseHandler.py</dependency>
+  <param name="tab" type="notebook">
+    <page name="settings" _gui-text="鼠标功能">
+			<param name="mouseSetting" type="optiongroup" _gui-text="鼠标设置:">
+        <_option value="default">默认</_option>
+        <_option value="noclick">不能点击</_option>
+        <_option value="draggingZoom">拖曳/缩放</_option>
+			</param>
+		</page>
+    <page name="help" _gui-text="Help">
+      <_param name="help_text" type="description">这个扩展用于为 JessyInk_c 设置鼠标功能。</_param>
+    </page>
+  </param>
+  <effect>
+    <object-type>g</object-type>
+      <effects-menu>
+        <submenu _name="JessyInk_c"/>
+      </effects-menu>
+  </effect>
+  <script>
+    <command reldir="extensions" interpreter="python">jessyInk_c_mouseHandler.py</command>
+  </script>
+</inkscape-extension>
+

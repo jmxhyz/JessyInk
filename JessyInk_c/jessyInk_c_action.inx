@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension">
+  <_name>鼠标动作</_name>
+  <id>jessyink_c.action</id>
+  <dependency type="executable" location="extensions">inkex.py</dependency>
+  <dependency type="executable" location="extensions">jessyInk_c_action.py</dependency>
+  <param name="tab" type="notebook">
+    <page name="action" _gui-text="鼠标动作">
+        <param name="actiontype" type="optiongroup" _gui-text="Type:">
+           <_option value="none">没有</_option>
+           <_option value="drag">拖拽</_option>
+           <_option value="jump">跳转</_option>
+        </param>
+        <param name="jumpslide" type="int" min="0" max="10000" _gui-text="幻灯片号:">0</param>
+        <param name="jumpeffect" type="int" min="0" max="10000" _gui-text="出场次序:">0</param>
+    </page>
+    <page name="help" _gui-text="Help">
+      <_param name="help_text" type="description">这个扩展用于安装、升级、或删除 JessyInk_c演示对象的鼠标动作。</_param>
+    </page>
+  </param>
+  <effect>
+    <object-type>all</object-type>
+      <effects-menu>
+        <submenu _name="JessyInk_c"/>
+      </effects-menu>
+  </effect>
+  <script>
+    <command reldir="extensions" interpreter="python">jessyInk_c_action.py</command>
+  </script>
+</inkscape-extension>
+

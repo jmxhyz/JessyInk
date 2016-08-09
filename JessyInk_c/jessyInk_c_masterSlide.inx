@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension">
+  <_name>幻灯片母板</_name>
+  <id>jessyink_c.masterSlide</id>
+  <dependency type="executable" location="extensions">inkex.py</dependency>
+  <dependency type="executable" location="extensions">jessyInk_c_masterSlide.py</dependency>
+  <param name="tab" type="notebook">
+    <page name="settings" _gui-text="设置">
+			<param name="layerName" type="string" _gui-text="SVG层名字:"></param>
+      <_param name="info_text" type="description">如果不提供SVG层的名字，幻灯母板无法设置。</_param>
+		</page>
+    <page name="help" _gui-text="Help">
+      <_param name="help_text" type="description">这个扩展用于为 JessyInk_c 设置幻灯片母板。</_param>
+    </page>
+  </param>
+  <effect>
+    <object-type>g</object-type>
+      <effects-menu>
+        <submenu _name="JessyInk_c"/>
+      </effects-menu>
+  </effect>
+  <script>
+    <command reldir="extensions" interpreter="python">jessyInk_c_masterSlide.py</command>
+  </script>
+</inkscape-extension>
+

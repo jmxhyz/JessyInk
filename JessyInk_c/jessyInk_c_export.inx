@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension">
+	<_name>JessyInk_c 导出pdf或png压缩包</_name>
+	<id>jessyink_c.export</id>
+	<dependency type="extension">org.inkscape.output.svg.inkscape</dependency>
+	<dependency type="executable" location="extensions">jessyInk_c_export.py</dependency>
+	<dependency type="executable" location="extensions">inkex.py</dependency>
+  <param name="tab" type="notebook">
+    <page name="settings" _gui-text="设置">
+			<param name="type" type="optiongroup" _gui-text="类型:">
+        <_option value="PDF">PDF</_option>
+        <_option value="PNG">PNG</_option>
+			</param>
+			<param name="resolution" type="int" min="50" max="1000" _gui-text="分辨率:">92</param>
+		</page>
+    <page name="help" _gui-text="Help">
+      <_param name="help_text" type="description">这个扩展将把 JessyInk_c 幻灯片导出为 pdf 或 png 格式压缩包。</_param>
+    </page>
+  </param>
+	<output>
+		<extension>.zip</extension>
+		<mimetype>application/x-zip</mimetype>
+		<_filetypename>JessyInk zipped pdf or png output (*.zip)</_filetypename>
+		<_filetypetooltip>把 JessyInk_c 幻灯片导出为 pdf 或 png 格式压缩包。</_filetypetooltip>
+		<dataloss>TRUE</dataloss>
+	</output>
+	<script>
+		<command reldir="extensions" interpreter="python">jessyInk_c_export.py</command>
+		<helper_extension>org.inkscape.output.svg.inkscape</helper_extension>
+	</script>
+</inkscape-extension>

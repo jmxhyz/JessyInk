@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension">
+  <_name>卸载</_name>
+  <id>jessyink_c.uninstall</id>
+  <dependency type="executable" location="extensions">inkex.py</dependency>
+  <dependency type="executable" location="extensions">jessyInk_c_uninstall.py</dependency>
+  <param name="tab" type="notebook">
+    <page name="options" _gui-text="选项">
+			<_param name="label" type="description">请选择需要卸载的 JessyInk_c 部分。</_param>
+			<param name="remove_script" type="boolean" _gui-text="卸载脚本">true</param>
+			<param name="remove_effects" type="boolean" _gui-text="卸载特效">true</param>
+			<param name="remove_masterSlide" type="boolean" _gui-text="卸载母板">true</param>
+			<param name="remove_transitions" type="boolean" _gui-text="卸载幻灯切换">true</param>
+			<param name="remove_autoTexts" type="boolean" _gui-text="卸载自动文字">true</param>
+			<param name="remove_views" type="boolean" _gui-text="卸载视域">true</param>
+		</page>
+    <page name="help" _gui-text="Help">
+			<_param name="help_text" type="description">这个扩展将会卸载 JessyInk_c 的全部或部分。</_param>
+    </page>
+	</param>
+  <effect>
+    <object-type>all</object-type>
+      <effects-menu>
+        <submenu _name="JessyInk_c"/>
+      </effects-menu>
+  </effect>
+  <script>
+    <command reldir="extensions" interpreter="python">jessyInk_c_uninstall.py</command>
+  </script>
+</inkscape-extension>
+

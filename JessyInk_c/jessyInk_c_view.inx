@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension">
+  <_name>视域</_name>
+  <id>jessyink_c.view</id>
+  <dependency type="executable" location="extensions">inkex.py</dependency>
+  <dependency type="executable" location="extensions">jessyInk_c_view.py</dependency>
+  <param name="tab" type="notebook">
+    <page name="settings" _gui-text="设置">
+			<param name="viewOrder" type="int" min="0" max="10000" _gui-text="Order:">1</param>
+			<param name="viewDuration" precision="1" type="float" min="0.1" max="10.0" _gui-text="过渡时间（秒）:">0.8</param>
+			<param name="removeView" type="boolean" _gui-text="删除视域">false</param>
+      <_param name="help_text" type="description">出场次序从0开始，即幻灯片第一个视域次序是0。</_param>
+		</page>
+    <page name="help" _gui-text="Help">
+      <_param name="help_text" type="description">这个扩展用于安装、升级、或删除 JessyInk_c演示幻灯片的视域。</_param>
+    </page>
+  </param>
+  <effect>
+    <object-type>rect</object-type>
+      <effects-menu>
+        <submenu _name="JessyInk_c"/>
+      </effects-menu>
+  </effect>
+  <script>
+    <command reldir="extensions" interpreter="python">jessyInk_c_view.py</command>
+  </script>
+</inkscape-extension>
+

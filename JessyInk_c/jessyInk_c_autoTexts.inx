@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension">
+  <_name>自动文字</_name>
+  <id>jessyink_c.autotexts</id>
+  <dependency type="executable" location="extensions">inkex.py</dependency>
+  <dependency type="executable" location="extensions">jessyInk_c_autoTexts.py</dependency>
+  <param name="tab" type="notebook">
+    <page name="settings" _gui-text="设置">
+			<param name="autoText" type="optiongroup" _gui-text="自动文字:">
+        <_option value="none">无（移除）</_option>
+        <_option value="slideTitle">幻灯片标题</_option>
+        <_option value="slideNumber">幻灯片页码</_option>
+        <_option value="numberOfSlides">幻灯片总数</_option>
+			</param>
+		</page>
+    <page name="help" _gui-text="Help">
+      <_param name="help_text" type="description">这个扩展将为 JessyInk_c 演示添加、更改、移除自动文字。</_param>
+    </page>
+  </param>
+  <effect>
+    <object-type>all</object-type>
+      <effects-menu>
+        <submenu _name="JessyInk_c"/>
+      </effects-menu>
+  </effect>
+  <script>
+    <command reldir="extensions" interpreter="python">jessyInk_c_autoTexts.py</command>
+  </script>
+</inkscape-extension>
+

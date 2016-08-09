@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension">
+  <_name>特效</_name>
+  <id>jessyink_c.effects</id>
+  <dependency type="executable" location="extensions">inkex.py</dependency>
+  <dependency type="executable" location="extensions">jessyInk_c_effects.py</dependency>
+  <param name="tab" type="notebook">
+    <page name="settings" _gui-text="Settings">
+			<_param name="effectInLabel" type="description">进场特效</_param>
+			<param name="effectInOrder" type="int" min="1" max="10000" _gui-text="次序:">1</param>
+			<param name="effectInDuration" precision="1" type="float" min="0.1" max="10.0" _gui-text="持续时间（秒）:">0.8</param>
+			<param name="effectIn" type="optiongroup" _gui-text="类型:">
+        <_option value="none">没有（默认）</_option>
+        <_option value="appear">出现</_option>
+        <_option value="fade">淡入</_option>
+        <_option value="pop">弹出</_option>
+        <_option value="tata">摇晃</_option>
+			</param>
+			<_param name="effectOutLabel" type="description">退场特效</_param>
+			<param name="effectOutOrder" type="int" min="1" max="10000" _gui-text="次序:">1</param>
+			<param name="effectOutDuration" precision="1" type="float" min="0.1" max="10.0" _gui-text="持续时间（秒）:">0.8</param>
+			<param name="effectOut" type="optiongroup" _gui-text="类型:">
+        <_option value="none">没有（默认）</_option>
+        <_option value="appear">出现</_option>
+        <_option value="fade">淡出</_option>
+        <_option value="pop">弹出</_option>
+			</param>
+		</page>
+    <page name="help" _gui-text="Help">
+      <_param name="help_text" type="description">这个扩展将为SVG对象添加、更改、移除 JessyInk_c 演示特效。</_param>
+    </page>
+  </param>
+  <effect>
+    <object-type>all</object-type>
+      <effects-menu>
+        <submenu _name="JessyInk_c"/>
+      </effects-menu>
+  </effect>
+  <script>
+    <command reldir="extensions" interpreter="python">jessyInk_c_effects.py</command>
+  </script>
+</inkscape-extension>
+

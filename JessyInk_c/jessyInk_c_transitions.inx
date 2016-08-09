@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension">
+  <_name>幻灯切换</_name>
+  <id>jessyink_c.transitions</id>
+  <dependency type="executable" location="extensions">inkex.py</dependency>
+  <dependency type="executable" location="extensions">jessyInk_c_transitions.py</dependency>
+  <param name="tab" type="notebook">
+    <page name="settings" _gui-text="设置">
+			<param name="layerName" type="string" _gui-text="SVG层:"></param>
+			<_param name="effectInLabel" type="description">幻灯片切入效果</_param>
+			<param name="effectInDuration" precision="1" type="float" min="0.1" max="10.0" _gui-text="过渡时间（秒）:">0.8</param>
+			<param name="effectIn" type="optiongroup" _gui-text="类型:">
+        <_option value="default">默认</_option>
+        <_option value="appear">出现</_option>
+        <_option value="fade">淡入</_option>
+        <_option value="pop">弹出</_option>
+        <_option value="tata">摇晃</_option>
+			</param>
+			<_param name="effectOutLabel" type="description">幻灯片切出效果</_param>
+			<param name="effectOutDuration" precision="1" type="float" min="0.1" max="10.0" _gui-text="过渡时间（秒）:">0.8</param>
+			<param name="effectOut" type="optiongroup" _gui-text="类型:">
+        <_option value="default">默认</_option>
+        <_option value="appear">出现</_option>
+        <_option value="fade">淡出</_option>
+        <_option value="pop">弹入</_option>
+			</param>
+		</page>
+    <page name="help" _gui-text="Help">
+      <_param name="help_text" type="description">这个扩展将对所选择的SVG层设置 JessyInk_c 切换效果。</_param>
+    </page>
+  </param>
+  <effect>
+    <object-type>g</object-type>
+      <effects-menu>
+        <submenu _name="JessyInk_c"/>
+      </effects-menu>
+  </effect>
+  <script>
+    <command reldir="extensions" interpreter="python">jessyInk_c_transitions.py</command>
+  </script>
+</inkscape-extension>
+

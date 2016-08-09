@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension">
+  <_name>快捷键</_name>
+  <id>jessyink_c.keyBindings</id>
+  <dependency type="executable" location="extensions">inkex.py</dependency>
+  <dependency type="executable" location="extensions">jessyInk_c_keyBindings.py</dependency>
+  <param name="tab" type="notebook">
+    <page name="settings" _gui-text="幻灯模式">
+			<param name="slide_backWithEffects" type="string" _gui-text="后退（有特效）:">LEFT, PAGE_UP</param>
+			<param name="slide_nextWithEffects" type="string" _gui-text="前进（有特效）:">RIGHT, PAGE_DOWN, SPACE</param>
+			<param name="slide_backWithoutEffects" type="string" _gui-text="后退（无特效）:">UP</param>
+			<param name="slide_nextWithoutEffects" type="string" _gui-text="前进（无特效）:">DOWN</param>
+			<param name="slide_firstSlide" type="string" _gui-text="幻灯首页:">HOME</param>
+			<param name="slide_lastSlide" type="string" _gui-text="幻灯末页:">END</param>
+			<param name="slide_switchToIndexMode" type="string" _gui-text="切换索引模式:">i</param>
+			<param name="slide_switchToDrawingMode" type="string" _gui-text="切换笔迹模式:">d</param>
+			<param name="slide_setDuration" type="string" _gui-text="设置时长:">D</param>
+			<param name="slide_addSlide" type="string" _gui-text="增加空幻灯片:">n</param>
+			<param name="slide_toggleProgressBar" type="string" _gui-text="切换进度条:">p</param>
+			<param name="slide_resetTimer" type="string" _gui-text="重置计时器:">t</param>
+			<param name="slide_export" type="string" _gui-text="导出演示文档:">e</param>
+		</page>
+    <page name="settings" _gui-text="笔迹模式">
+			<param name="drawing_switchToSlideMode" type="string" _gui-text="切换笔迹模式:">ESCAPE, d</param>
+			<param name="drawing_pathWidthDefault" type="string" _gui-text="设置笔宽为默认:">0</param>
+			<param name="drawing_pathWidth1" type="string" _gui-text="设置笔宽为 1:">1</param>
+			<param name="drawing_pathWidth3" type="string" _gui-text="设置笔宽为 3:">3</param>
+			<param name="drawing_pathWidth5" type="string" _gui-text="设置笔宽为 5:">5</param>
+			<param name="drawing_pathWidth7" type="string" _gui-text="设置笔宽为 7:">7</param>
+			<param name="drawing_pathWidth9" type="string" _gui-text="设置笔宽为 9:">9</param>
+			<param name="drawing_pathColourBlue" type="string" _gui-text="设置笔色为 蓝:">b</param>
+			<param name="drawing_pathColourCyan" type="string" _gui-text="设置笔色为 青:">c</param>
+			<param name="drawing_pathColourGreen" type="string" _gui-text="设置笔色为 绿:">g</param>
+			<param name="drawing_pathColourBlack" type="string" _gui-text="设置笔色为 黑:">k</param>
+			<param name="drawing_pathColourMagenta" type="string" _gui-text="设置笔色为 紫:">m</param>
+			<param name="drawing_pathColourOrange" type="string" _gui-text="设置笔色为 橙:">o</param>
+			<param name="drawing_pathColourRed" type="string" _gui-text="设置笔色为 红:">r</param>
+			<param name="drawing_pathColourWhite" type="string" _gui-text="设置笔色为 白:">w</param>
+			<param name="drawing_pathColourYellow" type="string" _gui-text="设置笔色为 黄:">y</param>
+			<param name="drawing_undo" type="string" _gui-text="撤销最后一笔:">z</param>
+		</page>
+    <page name="settings" _gui-text="索引模式">
+			<param name="index_selectSlideToLeft" type="string" _gui-text="选择左边幻灯片:">LEFT</param>
+			<param name="index_selectSlideToRight" type="string" _gui-text="选择右边幻灯片:">RIGHT</param>
+			<param name="index_selectSlideAbove" type="string" _gui-text="选择上方幻灯片:">UP</param>
+			<param name="index_selectSlideBelow" type="string" _gui-text="选择下方幻灯片:">DOWN</param>
+			<param name="index_previousPage" type="string" _gui-text="前一页:">PAGE_UP</param>
+			<param name="index_nextPage" type="string" _gui-text="后一页:">PAGE_DOWN</param>
+			<param name="index_firstSlide" type="string" _gui-text="首张幻灯片:">HOME</param>
+			<param name="index_lastSlide" type="string" _gui-text="末张幻灯片:">END</param>
+			<param name="index_switchToSlideMode" type="string" _gui-text="切换到幻灯模式:">ENTER, i</param>
+			<param name="index_decreaseNumberOfColumns" type="string" _gui-text="减少列数:">-</param>
+			<param name="index_increaseNumberOfColumns" type="string" _gui-text="增加列数:">+, =</param>
+			<param name="index_setNumberOfColumnsToDefault" type="string" _gui-text="设置默认列数:">0</param>
+		</page>
+    <page name="help" _gui-text="Help">
+      <_param name="help_text" type="description">这个扩展用于为 JessyInk_c 绑定键盘快捷键。</_param>
+    </page>
+  </param>
+  <effect>
+    <object-type>g</object-type>
+      <effects-menu>
+        <submenu _name="JessyInk_c"/>
+      </effects-menu>
+  </effect>
+  <script>
+    <command reldir="extensions" interpreter="python">jessyInk_c_keyBindings.py</command>
+  </script>
+</inkscape-extension>
+

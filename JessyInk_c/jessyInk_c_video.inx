@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension">
+  <_name>插入视听文件</_name>
+  <id>jessyink_c.core.video</id>
+  <dependency type="executable" location="extensions">inkex.py</dependency>
+  <dependency type="executable" location="extensions">jessyInk_c_video.py</dependency>
+  <param name="tab" type="notebook">
+    <page name="help" _gui-text="Help">
+      <_param name="help_text" type="description">这个扩展将在JessyInk_c当前幻灯片（活动层）添加一个视听对象。在这个视听对象上添加视听对象的路径。支持插入视频、音频、flash、html文件等。</_param>
+    </page>
+  </param>
+  <effect>
+    <object-type>all</object-type>
+      <effects-menu>
+        <submenu _name="JessyInk_c"/>
+      </effects-menu>
+  </effect>
+  <script>
+    <command reldir="extensions" interpreter="python">jessyInk_c_video.py</command>
+  </script>
+</inkscape-extension>
+
