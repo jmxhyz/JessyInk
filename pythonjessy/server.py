@@ -135,6 +135,11 @@ def msg_chat(action, form):
         return '{"returnjson":"say ok"}'
     if action == "hear":
         act = form["msgid"] # id 1
+        #print("act hear", type(act), act)
+        if int(act) <= (msg_id-100):
+            return '{"returnjson":{"msg_id":%s}}' % msg_id
+        if act == 0:
+            return '{"returnjson":{"msg_id":%s}}' % msg_id
         second = 0
         try:
             while True:
