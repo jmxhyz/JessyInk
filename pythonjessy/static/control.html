@@ -139,8 +139,8 @@ function socketconnect(){
     data = {"act":"connect"};
     xhr.send(postData(data));
 }
-sc = socketconnect();
-timer_sc = setInterval(socketconnect(), 60000);
+//ljj sc = socketconnect();
+//ljj timer_sc = setInterval(socketconnect(), 60000);
 
 function socketemit(key, msg){
   //var cd = {'jessid':2,'jessyslide':[22,44]};
@@ -188,11 +188,14 @@ function socketon(filter, id){
                     console.log(myData);
                 } else {
                     //timeout = 30;
-                    msgid++;
-                    if (myData["act"] == filter && myData["jessid"]==id){
+                    if ("msg_id" in myData){
+                        msgid = myData["msg_id"]+1;
+                    }else{
+                        msgid++;
+                        if (myData["act"] == filter && myData["jessid"]==id){
                         //alert(myData);
                         //$("#chattext").val(JSON.stringify(myData) + $("#chattext").val());
-                        socketonmsg(myData);
+                           socketonmsg(myData);}
                     }
                 }
                 timer_son = window.setTimeout(to_socketon, timeout);
@@ -209,7 +212,8 @@ function to_socketon(){
     msg = socketon("from jessy", jessyID);
     //timer_son = window.setTimeout(to_socketon, timeout);
 }
-timer_son = setInterval(to_socketon(), 60000);
+//timer_son = setInterval(to_socketon(), 60000);
+timer_son = window.setTimeout(to_socketon, 10);
 //============================================================
 function socketonmsg(msg){
 //socket.on('from jessy', function(msg){
