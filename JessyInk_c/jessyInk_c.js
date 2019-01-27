@@ -1766,9 +1766,9 @@ function slideUpdateExportLayer()
 		write : function(str, count) { this.content += str; }  
 	};
 
-	var xml = serializer.serializeToStream(newDoc, strm, 'UTF-8');
+	//var xml = serializer.serializeToStream(newDoc, strm, 'UTF-8');
 
-	window.location = 'data:application/svg+xml;base64;charset=utf-8,' + window.btoa(strm.content);
+	//window.location = 'data:application/svg+xml;base64;charset=utf-8,' + window.btoa(strm.content);
 
 	// Unsuspend redraw.
 	ROOT_NODE.unsuspendRedraw(suspendHandle);
@@ -1973,10 +1973,15 @@ function set_path_paint_width()
 	svgPoint2.x = 1.0;
 	svgPoint2.y = 0.0;
 
-	var matrix = slides[activeSlide]['element'].getTransformToElement(ROOT_NODE);
+	//var matrix = slides[activeSlide]['element'].getTransformToElement(ROOT_NODE);
+	var matrix = ROOT_NODE.getScreenCTM().inverse().multiply( slides[activeSlide]['element'].getScreenCTM() )
+
+	//fromElement.getTransformToElement(toElement)
+	//toElememnt.getScreenCTM().inverse().multiply( fromElement.getScreenCTM() )
 
 	if (slides[activeSlide]['viewGroup'])
-		matrix = slides[activeSlide]['viewGroup'].getTransformToElement(ROOT_NODE);
+		//matrix = slides[activeSlide]['viewGroup'].getTransformToElement(ROOT_NODE);
+		matrix = ROOT_NODE.getScreenCTM().inverse().multiply( slides[activeSlide]['viewGroup'].getScreenCTM() )
 
 	svgPoint1 = svgPoint1.matrixTransform(matrix);
 	svgPoint2 = svgPoint2.matrixTransform(matrix);
@@ -3220,3 +3225,26 @@ String.prototype.trim = function()
 	return this.replace(/^\s+|\s+$/g, '');
 }
 
+function countdown(obj){  //leejj
+	var r=0;
+	var g=0;
+	var b=0;
+	var dao;
+	var daoo;
+	dao = parseInt(obj.nextElementSibling.firstChild.innerHTML);
+	daoo = dao;
+	var fill;
+	var si180 = setInterval(function(){
+		dao--;
+		if(dao < 0) { dao = 0; clearInterval(si180); 
+			obj.nextElementSibling.firstChild.innerHTML = '' + daoo;
+		}else{
+			obj.nextElementSibling.firstChild.innerHTML = '' + dao;}
+		b = dao * 255 / daoo;
+		r = 255 - b;
+		r = parseInt(r);
+		b = parseInt(b);
+		obj.style.fill = 'rgb('+r+','+g+','+b+')';
+		//obj.style.fillOpacity = Math.abs(dao)/daoo;
+	}, 1000);
+}
