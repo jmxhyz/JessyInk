@@ -46,6 +46,10 @@ var END_KEY = 35; // end keycode
 var ENTER_KEY = 13; // next slide
 var SPACE_KEY = 32;
 var ESCAPE_KEY = 27;
+var F2_KEY = 113;
+var F4_KEY = 115;
+var F8_KEY = 119;
+var F9_KEY = 120;
 
 // Presentation modes.
 var SLIDE_MODE = 1;
@@ -890,6 +894,7 @@ function myzoomout(dir)
 var rotateangle = 0;
 var old_rotate_matrix;
 function myrotate(dir){
+	var ang = arguments[1] ? arguments[1] : 2;
 	if (slides[activeSlide].viewGroup.transform.baseVal.numberOfItems < 1)
 	{
 		var matrix = (new matrixSVG()).fromElements(1, 0, 0, 0, 1, 0, 0, 0, 1);
@@ -907,7 +912,7 @@ function myrotate(dir){
 	    matrix = old_rotate_matrix;
 	    slides[activeSlide].viewGroup.setAttribute('transform', matrix.toAttribute());
 	}else{
-	    rotateangle = dir > 0 ? 2 : -2;
+	    rotateangle = dir > 0 ? ang : -ang;
 
 	//var element = slides[activeSlide]['element'];	
 	if (MOUSE_LEFT == 0 && MOUSE_TOP == 0) {
@@ -1358,6 +1363,10 @@ function getDefaultKeyCodeDictionary()
 	keyCodeDict[SLIDE_MODE][HOME_KEY] = function() { return slideSetActiveSlide(0); };
 	keyCodeDict[SLIDE_MODE][END_KEY] = function() { return slideSetActiveSlide(slides.length - 1); };
 	keyCodeDict[SLIDE_MODE][SPACE_KEY] = function() { return dispatchEffects(1); };
+	keyCodeDict[SLIDE_MODE][F2_KEY] = function () { return slideSwitchToDrawingMode(); }; //leejj
+	keyCodeDict[SLIDE_MODE][F8_KEY] = function () { return myrotate(1,30); };   //leejj
+	keyCodeDict[SLIDE_MODE][F9_KEY] = function () { return myrotate(-1,30); };   //leejj
+	keyCodeDict[SLIDE_MODE][F4_KEY] = function () { return myrotate(0); };   //leejj
 
 	keyCodeDict[INDEX_MODE][LEFT_KEY] = function() { return indexSetPageSlide(activeSlide - 1); };
 	keyCodeDict[INDEX_MODE][RIGHT_KEY] = function() { return indexSetPageSlide(activeSlide + 1); };
@@ -1370,6 +1379,7 @@ function getDefaultKeyCodeDictionary()
 	keyCodeDict[INDEX_MODE][ENTER_KEY] = function() { return toggleSlideIndex(); };
 
 	keyCodeDict[DRAWING_MODE][ESCAPE_KEY] = function () { return drawingSwitchToSlideMode(); };
+	keyCodeDict[DRAWING_MODE][F2_KEY] = function () { return drawingSwitchToSlideMode(); };  //leejj
 
 	return keyCodeDict;
 }
@@ -1766,9 +1776,9 @@ function slideUpdateExportLayer()
 		write : function(str, count) { this.content += str; }  
 	};
 
-	//var xml = serializer.serializeToStream(newDoc, strm, 'UTF-8');
+	var xml = serializer.serializeToStream(newDoc, strm, 'UTF-8');
 
-	//window.location = 'data:application/svg+xml;base64;charset=utf-8,' + window.btoa(strm.content);
+	window.location = 'data:application/svg+xml;base64;charset=utf-8,' + window.btoa(strm.content);
 
 	// Unsuspend redraw.
 	ROOT_NODE.unsuspendRedraw(suspendHandle);
@@ -1977,7 +1987,7 @@ function set_path_paint_width()
 	var matrix = ROOT_NODE.getScreenCTM().inverse().multiply( slides[activeSlide]['element'].getScreenCTM() )
 
 	//fromElement.getTransformToElement(toElement)
-	//toElememnt.getScreenCTM().inverse().multiply( fromElement.getScreenCTM() )
+	//toElememnt.getScreenCTM().inverse().multiply( fromElement.getScreenCTM() )  //chrome
 
 	if (slides[activeSlide]['viewGroup'])
 		//matrix = slides[activeSlide]['viewGroup'].getTransformToElement(ROOT_NODE);
@@ -2126,9 +2136,9 @@ function tata(dir, element, time, options)
 			** element.setAttribute('transform', 'translate(' + tatanum + ',0)'); 
 			**var hcss;
 			**hcss += ' transform-origin:center center; rotateY(' + tatanum + 'deg);'
-			**hcss += &quot; transform-origin:center center; rotateY(' + tatanum + 'deg);'
+			**hcss += ' transform-origin:center center; rotateY(' + tatanum + 'deg);'
 			**element.style.cssText = hcss;
-			**element.style.MozTransformOrigin = cx + &quot;px &quot; + yx + &quot;px&quot;;
+			**element.style.MozTransformOrigin = cx + 'px ' + yx + 'px';
 			**/
 			element.style.transformOrigin = cx + 'px ' + yx + 'px';
 			element.style.transform = 'translateX(' + tatanum + 'px) rotateY(' + tatanum + 'deg)';
@@ -3247,4 +3257,20 @@ function countdown(obj){  //leejj
 		obj.style.fill = 'rgb('+r+','+g+','+b+')';
 		//obj.style.fillOpacity = Math.abs(dao)/daoo;
 	}, 1000);
+}
+var huabii=1;
+function huabi(){  //leejj
+if(huabii==1){
+slideSwitchToDrawingMode();
+}else{
+drawingSwitchToSlideMode();}
+huabii=huabii*-1;
+}
+var rotate_enable=0;
+function xuan(event, d){  //leejj
+event.preventDefault();
+event.stopPropagation();
+//myrotate(d);
+rotate_enable=1;
+return false;
 }
