@@ -266,6 +266,8 @@ function jessyInk_core_mouseHandler_zoomControl(obj)
 	 */
 	obj.mousedown = function (e)
 	{
+	if(rotate_enable==1){rotate_enable=0;}
+	
 		var p = obj.projectCoords(obj.getCoords(e)); //leejj
 		MOUSE_LEFT = p.x;  //leejj
 		MOUSE_TOP = p.y;   //leejj
@@ -320,13 +322,19 @@ function jessyInk_core_mouseHandler_zoomControl(obj)
 		}catch(err){
 			value = e.which;
 		}
+		if (value == 1)  //1 =middle button
+		{
+			obj.dragging_active = false;
+			obj.click = false;
+
+			dispatchEffects(-1);
+		}
 		if (value == 2)  //2 =right button
 		{
 			obj.dragging_active = false;
 			obj.click = false;
-			
+
 			dispatchEffects(1);
-			
 		}
 
 
@@ -356,6 +364,22 @@ function jessyInk_core_mouseHandler_zoomControl(obj)
 	 */
 	obj.mousewheel = function(e)
 	{
+		if (e.wheelDelta)
+		{ // IE Opera
+			delta = e.wheelDelta/120;
+		}
+		else if (e.detail)
+		{ // MOZ
+			delta = -e.detail/3;
+		}
+	if (rotate_enable==1){
+		if(delta < 1){
+			myrotate(-1);
+		}else{
+			myrotate(1);
+		}
+		return false;
+	}
 		var p = obj.projectCoords(obj.getCoords(e));
 
 		if (slides[activeSlide].viewGroup.transform.baseVal.numberOfItems < 1)
@@ -365,15 +389,6 @@ function jessyInk_core_mouseHandler_zoomControl(obj)
 		else
 		{
 			var matrix = (new matrixSVG()).fromSVGMatrix(slides[activeSlide].viewGroup.transform.baseVal.consolidate().matrix);
-		}
-
-		if (e.wheelDelta)
-		{ // IE Opera
-			delta = e.wheelDelta/120;
-		}
-		else if (e.detail)
-		{ // MOZ
-			delta = -e.detail/3;
 		}
 
 		var widthOld = p.x * matrix.e11 + p.y * matrix.e12;
