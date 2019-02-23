@@ -103,7 +103,7 @@ var mouseHandlerDictionary = getDefaultMouseHandlerDictionary();
 var progress_bar_visible = false;
 var timer_elapsed = 0;
 var timer_start = timer_elapsed;
-var timer_duration = 15; // 15 minutes
+var timer_duration = 35; // 35 minutes
 
 var history_counter = 0;
 var history_original_elements = new Array();
@@ -2518,7 +2518,7 @@ function createProgressBar(parent_node)
 	var rect_progress_bar = document.createElementNS(NSS['svg'], 'rect');
 	rect_progress_bar.setAttribute('style', 'marker: none; fill: rgb(128, 128, 128); stroke: none;');
 	rect_progress_bar.setAttribute('id', 'rect_progress_bar');
-	rect_progress_bar.setAttribute('x', 0);
+	rect_progress_bar.setAttribute('x', 0.05 * HEIGHT);
 	rect_progress_bar.setAttribute('y', 0.99 * HEIGHT);
 	rect_progress_bar.setAttribute('width', 0);
 	rect_progress_bar.setAttribute('height', 0.01 * HEIGHT);
@@ -2527,12 +2527,38 @@ function createProgressBar(parent_node)
 	var circle_timer_indicator = document.createElementNS(NSS['svg'], 'circle');
 	circle_timer_indicator.setAttribute('style', 'marker: none; fill: rgb(255, 0, 0); stroke: none;');
 	circle_timer_indicator.setAttribute('id', 'circle_timer_indicator');
-	circle_timer_indicator.setAttribute('cx', 0.005 * HEIGHT);
+	circle_timer_indicator.setAttribute('cx', 0.05 * HEIGHT);
 	circle_timer_indicator.setAttribute('cy', 0.995 * HEIGHT);
 	circle_timer_indicator.setAttribute('r', 0.005 * HEIGHT);
 	g.appendChild(circle_timer_indicator);
 
 	parent_node.appendChild(g);
+	
+	//add draw rotate button
+	var gg = document.createElementNS(NSS['svg'], 'g');
+	gg.setAttribute('id', 'draw_button');
+	//gg.setAttribute('style', 'display: none;');
+
+	var draw_bn = document.createElementNS(NSS['svg'], 'circle');
+	draw_bn.setAttribute('style', 'marker: none; fill: rgb(60, 60, 160); stroke: none;fill-opacity:0.5');
+	draw_bn.setAttribute('id', 'draw_bn');
+	draw_bn.setAttribute('cx', 0.01 * HEIGHT);
+	draw_bn.setAttribute('cy', 0.99 * HEIGHT);
+	draw_bn.setAttribute('r', 0.01 * HEIGHT);
+	draw_bn.setAttribute('onclick', 'huabi()');
+	
+	var rotate_bn = document.createElementNS(NSS['svg'], 'circle');
+	rotate_bn.setAttribute('style', 'marker: none; fill: rgb(190, 60, 190); stroke: none;fill-opacity:0.5');
+	rotate_bn.setAttribute('id', 'draw_bn');
+	rotate_bn.setAttribute('cx', 0.03 * HEIGHT);
+	rotate_bn.setAttribute('cy', 0.99 * HEIGHT);
+	rotate_bn.setAttribute('r', 0.01 * HEIGHT);
+	rotate_bn.setAttribute('onmousedown', 'xuan(evt)');
+	
+	gg.appendChild(draw_bn);
+	gg.appendChild(rotate_bn);
+
+	parent_node.appendChild(gg);
 }
 
 /** Function to hide the progress bar.
@@ -2582,7 +2608,7 @@ function setProgressBarValue(value)
 	if (value < 1)
 	{
 		// First slide, assumed to be the title of the presentation
-		var x = 0;
+		var x = 0.05 * HEIGHT;
 		var w = 0.01 * HEIGHT;
 	}
 	else if (value >= slides.length - 1)
@@ -2596,7 +2622,7 @@ function setProgressBarValue(value)
 		value -= 1;
 		value /= (slides.length - 2);
 
-		var x = WIDTH * value;
+		var x = WIDTH * value + 0.05 * HEIGHT;
 		var w = WIDTH / (slides.length - 2);
 	}
 
@@ -2628,7 +2654,7 @@ function setTimeIndicatorValue(value)
 		value = 1.0;
 	}
 
-	var cx = (WIDTH - 0.01 * HEIGHT) * value + 0.005 * HEIGHT;
+	var cx = (WIDTH - 0.01 * HEIGHT) * value + 0.05 * HEIGHT;
 	circle_timer_indicator.setAttribute('cx', cx);
 }
 
@@ -3272,5 +3298,6 @@ event.preventDefault();
 event.stopPropagation();
 //myrotate(d);
 rotate_enable=1;
+ROOT_NODE.style.cursor='all-scroll';
 return false;
 }
