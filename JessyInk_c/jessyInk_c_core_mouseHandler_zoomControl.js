@@ -266,7 +266,7 @@ function jessyInk_core_mouseHandler_zoomControl(obj)
 	 */
 	obj.mousedown = function (e)
 	{
-	if(rotate_enable==1){rotate_enable=0;}
+	if(rotate_enable==1){rotate_enable=0;ROOT_NODE.style.cursor='';}
 	
 		var p = obj.projectCoords(obj.getCoords(e)); //leejj
 		MOUSE_LEFT = p.x;  //leejj
@@ -373,9 +373,10 @@ function jessyInk_core_mouseHandler_zoomControl(obj)
 			delta = -e.detail/3;
 		}
 	if (rotate_enable==1){
-		if(delta < 1){
+		if(delta < 0){
 			myrotate(-1);
-		}else{
+		}
+		if(delta > 0){
 			myrotate(1);
 		}
 		return false;
