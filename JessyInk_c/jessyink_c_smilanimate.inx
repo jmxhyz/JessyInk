@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension">
+  <_name>SMIL动画</_name>
+  <id>jessyink_c.smilanimate</id>
+  <dependency type="executable" location="extensions">inkex.py</dependency>
+  <dependency type="executable" location="extensions">jessyink_c_smilanimate.py</dependency>
+  <param name="tab" type="notebook">
+	<page name="settings" _gui-text="Settings">
+		<_param name="smilLabel" type="description">SMIL动画参数</_param>
+			<param name="smilbegin" type="string"       _gui-text="   开始时间(s,h,min):">indefinite</param>
+			<param name="smilend" type="string"         _gui-text="   结束时间(s,h,min):">mouseout</param>
+			<param name="smilDuration" type="string"    _gui-text="   持续时间(s,h,min):">10s</param>
+			<param name="smilrepeatCount" type="string" _gui-text="重复次数(indefinite)：">indefinite</param>
+			<param name="smiltype" type="optiongroup" _gui-text="类型:">
+				<_option value="animateTransform">animateTransform变形</_option>
+				<_option value="animateMotion">animateMotion运动</_option>
+				<_option value="animate">animate属性</_option>
+				<!-- _option value="set">set属性</_option -->
+			</param>
+			<param name="Gswitch" type="boolean" _gui-text="全局开关">false</param>
+	</page>
+	<page name="smilTransform"  _gui-text="变形参数">
+		<_param name="smilLabel1" type="description">animateTransform变形参数</_param>
+			<param name="transfrom" type="string" _gui-text="from:">0 0 0</param>
+			<param name="transto" type="string" _gui-text="  to:">0 0 0</param>
+			<param name="transformtype" type="optiongroup" _gui-text="变形类型:">
+				<_option value="rotate">旋转</_option>
+				<_option value="translate">位移</_option>
+				<_option value="scale">缩放</_option>
+				<_option value="skewX">X倾斜</_option>
+				<_option value="skewY">Y倾斜</_option>
+			</param>
+	</page>
+	<page name="smilMotion"  _gui-text="运动参数">
+		<_param name="smilLabel2" type="description">animateMotion运动参数</_param>
+			<param name="pathid" type="string" _gui-text="路径ID:">0</param>
+			<param name="Mrotate" type="boolean" _gui-text="自动旋转">false</param>
+	</page>
+	<page name="smilani"  _gui-text="属性动画参数">
+		<_param name="smilLabel2" type="description">animate属性参数</_param>
+			<param name="attrib" type="string" _gui-text="指定属性:">cx</param>
+			<param name="attfrom" type="string" _gui-text="from:">0</param>
+			<param name="attto" type="string" _gui-text="  to:">0</param>
+	</page>
+    <page name="help" _gui-text="Help">
+      <_param name="help_text" type="description">这个扩展将为SVG对象添加、更改、移除 smil animate 演示特效。</_param>
+    </page>
+  </param>
+  <effect>
+    <object-type>all</object-type>
+      <effects-menu>
+        <submenu _name="JessyInk_c"/>
+      </effects-menu>
+  </effect>
+  <script>
+    <command reldir="extensions" interpreter="python">jessyink_c_smilanimate.py</command>
+  </script>
+</inkscape-extension>
+
