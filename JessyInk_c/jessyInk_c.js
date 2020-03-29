@@ -626,16 +626,18 @@ var currentX = 0;
 var currentY = 0;
 var currentMatrix = 0;
 var my_rotate = 0;
+var my_zoom = 0;
 var my_matrix, my1_matrix;
 var mySVG = document.getElementsByTagName('svg')[0];
 
-function mydrag(evt) {
+function mydrag(evt, zoom=0) {
       //svg = document.querySelector('svg');
       MOVE_CAN = 0; //can not drag move
       my_rotate = 0;
       if (evt.ctrlKey){ my_rotate = 1 * Math.PI / 180; }
       if (evt.shiftKey){ my_rotate = -1 * Math.PI / 180; }
       if (evt.button==2){my_rotate = 1 * Math.PI / 180;} //right click
+      if (zoom==1){ my_rotate = 0; my_zoom = 1;}
       var sCTM = mySVG.getScreenCTM();
       var pt = mySVG.createSVGPoint();
       pt.x = evt.clientX;
@@ -722,6 +724,17 @@ function moveElement(evt) {
           my1_matrix.e = (x - r * Math.sin(delta));
           my1_matrix.f = -(r * Math.cos(delta) -y);
           my_matrix = my_matrix.multiply(my1_matrix);
+      }
+      if( my_zoom != 0){
+          my_matrix.a += dx;
+           var elPos = selectedElement.getBoundingClientRect(); //left,top
+          //var elPos = selectedElement.getBBox(); //x,y
+          pt.y = elPos.top;
+          pt.x = elPos.left;
+          sCTM = selectedElement.getScreenCTM();
+          pnt = pt.matrixTransform(sCTM.inverse());
+          x = pnt.x;
+          my_matrix.e -= x * dx;
       }else{
           my_matrix.e += dx;
           my_matrix.f += dy;
@@ -1391,11 +1404,21 @@ function getDefaultKeyCodeDictionary()
  */
 function mouseHandlerDispatch(evnt, action)
 {
-    if (selectedElement != 0 && action != 2 ){return true;}  //leejj mydrag
+	var video = (evnt.target || evnt.srcElement);
+	var j = video.childElementCount;
+	//smil animate
+	if(j>0 && action==MOUSE_UP){
+		for(var i=0;i < j;i++){
+			var tagn=video.children[i].tagName;
+			if(tagn.substr(0,5)=='anima'){ 
+				ROOT_NODE.unpauseAnimations();video.children[i].beginElement(); }
+		}
+	}
+
+	if (selectedElement != 0 && action != 2 ){return true;}  //leejj mydrag
 	if (!evnt)
 		evnt = window.event;
 
-	var video = (evnt.target || evnt.srcElement);
 	if(video.tagName == 'video')
 	{
 		//if(evnt.type == 'mousemove') return false;
@@ -1433,6 +1456,28 @@ document.onmouseup = function(e) { return mouseHandlerDispatch(e, MOUSE_UP); };
 document.onmousemove = function(e) { return mouseHandlerDispatch(e, MOUSE_MOVE); };
 document.onclick = function(e) { e.preventDefault(); return false; }; //leejj
 document.oncontextmenu = function(){return false;}  //leejj
+
+// set mobile touch
+var tstartX;
+var tstartY;
+var tX;
+var tY;
+document.ontouchstart = function(e) { //e.preventDefault(); 
+tstartX = e.touches[0].clientX;
+tstartY = e.touches[0].clientY;};
+
+document.ontouchend= function(e) { 
+ e.preventDefault(); 
+ var moveEndX = e.changedTouches[0].clientX;
+ var moveEndY = e.changedTouches[0].clientY; 
+ tX = moveEndX - tstartX; 
+ tY = moveEndY - tstartY; 
+ if ( Math.abs(tX) > Math.abs(tY) && tX > 400 ) {return dispatchEffects(-1); }  //alert('left 2 right'); 
+ else if ( Math.abs(tX) > Math.abs(tY) && tX < -400 ) {return dispatchEffects(1); } //alert('right 2 left'); 
+ else if ( Math.abs(tY) > Math.abs(tX) && tY > 400) { return skipEffects(-1); } //alert('top 2 bottom'); 
+ else if ( Math.abs(tY) > Math.abs(tX) && tY < -400 ) { return skipEffects(1); } //alert('bottom 2 top'); 
+ //else{ alert('just touch'); }
+};
 
 // Moz
 if (window.addEventListener)
@@ -2664,6 +2709,7 @@ function setTimeIndicatorValue(value)
 function updateTimer()
 {
 	timer_elapsed += 1;
+	if (timer_elapsed > 1 && timer_elapsed < 3){ ROOT_NODE.pauseAnimations(); }
 	setTimeIndicatorValue((timer_elapsed - timer_start) / (60 * timer_duration));
 }
 
@@ -3261,6 +3307,26 @@ String.prototype.trim = function()
 	return this.replace(/^\s+|\s+$/g, '');
 }
 
+//get random number，include lowerValue and upperValue
+function randomFrom(lowerValue,upperValue)
+{
+    return Math.floor(Math.random() * (upperValue - lowerValue + 1) + lowerValue);
+}
+function lucky(obj){  //leejj
+	dao = 6;
+	daoo = dao;
+	var fill;
+	obj.style.fill = 'rgb(213,255,230)';
+	var luck10 = setInterval(function(){
+		dao--;
+		if(dao < 0) { 
+			dao = 0; clearInterval(luck10); 
+			obj.style.fill = 'rgb(255,170,204)';
+		}else{
+			obj.nextElementSibling.firstChild.innerHTML = '' + randomFrom(1, 57);}
+	}, 200);
+}
+
 function countdown(obj){  //leejj
 	var r=0;
 	var g=0;
@@ -3284,6 +3350,7 @@ function countdown(obj){  //leejj
 		//obj.style.fillOpacity = Math.abs(dao)/daoo;
 	}, 1000);
 }
+
 var huabii=1;
 function huabi(){  //leejj
 if(huabii==1){
