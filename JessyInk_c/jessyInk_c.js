@@ -3307,7 +3307,7 @@ String.prototype.trim = function()
 	return this.replace(/^\s+|\s+$/g, '');
 }
 
-//get random number，include lowerValue and upperValue
+//get random number, include lowerValue and upperValue
 function randomFrom(lowerValue,upperValue)
 {
     return Math.floor(Math.random() * (upperValue - lowerValue + 1) + lowerValue);
