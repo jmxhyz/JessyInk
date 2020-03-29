@@ -45,10 +45,10 @@ class JessyInk_Effects(inkex.Effect):
 		scriptNodes = self.document.xpath("//svg:script[@jessyink:version='1.5.6']", namespaces=inkex.NSS)
 
 		if len(scriptNodes) != 1:
-			inkex.errormsg(_("The JessyInk script is not installed in this SVG file or has a different version than the JessyInk extensions. Please select \"install/update...\" from the \"JessyInk\" sub-menu of the \"Extensions\" menu to install or update the JessyInk script.\n\n"))
+			inkex.errormsg(_(u"JessyInk_c 还未安装到这个SVG文件，或者版本不同. 请使用 “扩展” 菜单下 “JessyInk_c” 的 “安装/升级...” 命令进行JessyInk_c 的安装。\n\n"))
 
 		if len(self.selected) == 0:
-			inkex.errormsg(_("No object selected. Please select the object you want to assign an effect to and then press apply.\n"))
+			inkex.errormsg(_(u"进行设置前，请先选择一个对象。\n"))
 
 		for id, node in list(self.selected.items()):
 			if (self.options.actiontype == "none"):
@@ -57,10 +57,25 @@ class JessyInk_Effects(inkex.Effect):
 					del node.attrib["onmousedown"]
 				if "onclick" in node.attrib:
 					del node.attrib["onclick"]
+				if "ondblclick" in node.attrib:
+					del node.attrib["ondblclick"]
 			if (self.options.actiontype == "drag"):
 				node.set("onmousedown","mydrag(evt)")
 			if (self.options.actiontype == "jump"):
 				node.set("onclick","jumpto(" + self.options.jumpslide + "," + self.options.jumpeffect + ")")
+			if (self.options.actiontype == "fold"):
+				if "transform" in node.attrib:
+					#inkex.errormsg(_(','.join(dir(node))))
+					#inkex.errormsg(_(node.__getattribute__('transform')))
+					#inkex.errormsg(_(','.join(node.attrib.values())))
+					#return
+					s_matrix = ''.join(node.attrib.values())
+					if "matrix" in s_matrix:
+						node.set("onclick","this.style.transform='scale(1,1)'")
+						node.set("ondblclick","this.style.transform=''")
+						return
+				#else:
+				node.set("onmousedown","mydrag(evt, 1)")
 
 # Create effect instance
 effect = JessyInk_Effects()
