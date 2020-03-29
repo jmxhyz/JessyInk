@@ -6,10 +6,11 @@
   <dependency type="executable" location="extensions">jessyInk_c_action.py</dependency>
   <param name="tab" type="notebook">
     <page name="action" _gui-text="鼠标动作">
-        <param name="actiontype" type="optiongroup" _gui-text="Type:">
+        <param name="actiontype" type="optiongroup" _gui-text="类型:">
            <_option value="none">没有</_option>
            <_option value="drag">拖拽</_option>
            <_option value="jump">跳转</_option>
+           <_option value="fold">展开</_option>
         </param>
         <param name="jumpslide" type="int" min="0" max="10000" _gui-text="幻灯片号:">0</param>
         <param name="jumpeffect" type="int" min="0" max="10000" _gui-text="出场次序:">0</param>
