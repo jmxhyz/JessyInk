@@ -637,6 +637,8 @@ function mydrag(evt, zoom=0) {
       if (evt.ctrlKey){ my_rotate = 1 * Math.PI / 180; }
       if (evt.shiftKey){ my_rotate = -1 * Math.PI / 180; }
       if (evt.button==2){my_rotate = 1 * Math.PI / 180;} //right click
+      if (my_rotate != 0){ zoom = 0;}
+      if (evt.altKey){ zoom = 0;my_zoom = 0;}
       if (zoom==1){ my_rotate = 0; my_zoom = 1;}
       var sCTM = mySVG.getScreenCTM();
       var pt = mySVG.createSVGPoint();
@@ -769,11 +771,10 @@ function deselectElement(evt) {
 function jumpto(slidenum, effectnum)
 {
     if (activeSlide != slidenum){
+        if (effectnum == 0){activeEffect=0;}
         slideSetActiveSlide(slidenum);
     }
-    if (effectnum == 0){
-        activeEffect=1; dispatchEffects(-1);
-    }else{
+    if (effectnum != 0){
         activeEffect=effectnum-1; dispatchEffects(1);
     }
 }
@@ -2579,7 +2580,7 @@ function createProgressBar(parent_node)
 
 	parent_node.appendChild(g);
 	
-	//add draw rotate button
+	//add draw rotate reset button
 	var gg = document.createElementNS(NSS['svg'], 'g');
 	gg.setAttribute('id', 'draw_button');
 	//gg.setAttribute('style', 'display: none;');
@@ -2600,8 +2601,17 @@ function createProgressBar(parent_node)
 	rotate_bn.setAttribute('r', 0.01 * HEIGHT);
 	rotate_bn.setAttribute('onmousedown', 'xuan(evt)');
 	
+	var reset_bn = document.createElementNS(NSS['svg'], 'circle');
+	reset_bn.setAttribute('style', 'marker: none; fill: rgb(220, 255, 55); stroke: none;fill-opacity:0.5');
+	reset_bn.setAttribute('id', 'draw_bn');
+	reset_bn.setAttribute('cx', 0.05 * HEIGHT);
+	reset_bn.setAttribute('cy', 0.99 * HEIGHT);
+	reset_bn.setAttribute('r', 0.01 * HEIGHT);
+	reset_bn.setAttribute('onmousedown', 'slideUpdateExportLayer()');
+
 	gg.appendChild(draw_bn);
 	gg.appendChild(rotate_bn);
+	gg.appendChild(reset_bn);
 
 	parent_node.appendChild(gg);
 }
